@@ -22,6 +22,6 @@ class PortfolioRepository(private val apiService: ApiService) {
     suspend fun getAssetDetails(ticker: String): Response<VitrinaDetailDto> = 
         apiService.getAssetDetails(ticker)
     
-    suspend fun createOrder(idempotencyKey: String, orderRequest: OrderRequest): Response<OrdenResponse> = 
+    suspend fun createOrder(idempotencyKey: String, orderRequest: OrdenRequest): Response<OrdenResponse> =
         apiService.createOrder(idempotencyKey, orderRequest)
 }

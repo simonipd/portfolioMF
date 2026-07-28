@@ -4,7 +4,7 @@ import kotlinx.coroutines.delay
 import java.time.Instant
 import java.util.UUID
 
-// MARK: - Data Models
+// Sata Models
 
 // Response Models
 data class PortafolioResponse(
@@ -17,7 +17,7 @@ data class PortafolioResponse(
 )
 
 data class PuntoEvolucion(
-    val fecha: String, // ISO 8601 date
+    val fecha: String,
     val valorPortafolio: String
 )
 
@@ -118,13 +118,13 @@ data class OrdenSimulacionResponse(
 
 data class OrdenCrearRequest(
     val nemo: String,
-    val lado: String, // "COMPRA" o "VENTA"
+    val lado: String,
     val cantidad: String? = null,
     val monto: String? = null
 )
 
 data class OrdenCrearResponse(
-    val id: String, // UUID
+    val id: String,
     val nemo: String,
     val categoria: String,
     val nombreInstrumento: String,
@@ -134,7 +134,7 @@ data class OrdenCrearResponse(
     val monto: String,
     val precioReferencia: String,
     val numeroDeCuenta: String,
-    val fechaRecepcion: String // ISO 8601
+    val fechaRecepcion: String
 )
 
 data class ErrorResponse(
@@ -372,7 +372,7 @@ class PACEMockAPIService private constructor() {
     
     // MARK: - Order Endpoints
     
-    suspend fun simularOrden(request: OrdenSimulacionRequest): OrdenSimulacionResponse {
+    suspend fun simulateOrder(request: OrdenSimulacionRequest): OrdenSimulacionResponse {
         delay(400)
         
         val precio = "410.01"

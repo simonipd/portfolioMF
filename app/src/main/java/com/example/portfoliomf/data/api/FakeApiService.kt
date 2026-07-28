@@ -11,15 +11,15 @@ class FakeApiService : ApiService {
         delay(500)
         return Response.success(
             ResumenPortafolio(
-                valorPortafolio = "15450.50",
-                patrimonio = "15450.50",
-                variacionIntraday = "120.50",
-                variacionIntradayPorcentaje = "0.78",
+                valorPortafolio = "40.433,00",
+                patrimonio = "40.433,00",
+                variacionIntraday = "7.06",
+                variacionIntradayPorcentaje = "0,04",
                 ordenesEnTransito = 0,
                 evolucion = listOf(
-                    PuntoEvolucion("2023-01-01", "14000.0"),
-                    PuntoEvolucion("2023-06-01", "14800.0"),
-                    PuntoEvolucion("2023-10-01", "15450.50")
+                    PuntoEvolucion("2023-01-01", "35000.0"),
+                    PuntoEvolucion("2023-06-01", "38000.0"),
+                    PuntoEvolucion("2023-10-01", "40433.0")
                 )
             )
         )
@@ -29,9 +29,9 @@ class FakeApiService : ApiService {
         delay(300)
         return Response.success(
             BalanceResponse(
-                disponibleParaOperarUsd = "2450.0",
-                disponibleParaRetirarUsd = "2000.0",
-                balanceUsd = "2500.0",
+                disponibleParaOperarUsd = "40.455,21",
+                disponibleParaRetirarUsd = "35.000,00",
+                balanceUsd = "40.455,21",
                 actualizadoEn = "2023-10-27T10:00:00Z"
             )
         )
@@ -44,10 +44,11 @@ class FakeApiService : ApiService {
     ): Response<PaginatedPosicionesResponse> {
         delay(400)
         val positions = listOf(
-            PosicionItem("AAPL", "Apple Inc.", "Tecnología", null, "3500.0", "10.0", "0.28"),
-            PosicionItem("TSLA", "Tesla, Inc.", "Automotriz", null, "2800.0", "-15.0", "-0.53"),
-            PosicionItem("MSFT", "Microsoft Corp.", "Tecnología", null, "4200.0", "25.0", "0.60"),
-            PosicionItem("GOOGL", "Alphabet Inc.", "Tecnología", null, "2450.50", "5.50", "0.22")
+            PosicionItem("AAL", "American Airlines Group Inc.", "Transporte", null, "396.84", "0.25", "0.57"),
+            PosicionItem("AMZN", "Amazon", "E-commerce", null, "854.08", "0.21", "0.14"),
+            PosicionItem("TSLA", "Tesla", "Automotriz", null, "576.28", "-1.33", "-0.27"),
+            PosicionItem("APPL", "Apple", "Tecnología", null, "782.01", "1.04", "0.06"),
+            PosicionItem("EXPI", "Exp World Holdings, Inc.", "Bienes Raíces", null, "219.78", "0.15", "0.10")
         )
         return Response.success(
             PaginatedPosicionesResponse(
@@ -66,14 +67,13 @@ class FakeApiService : ApiService {
     ): Response<PaginatedVitrinaResponse> {
         delay(300)
         val allAssets = listOf(
-            VitrinaDto("AAPL", "Apple Inc.", "175.50", "", "1.2", "Acciones"),
-            VitrinaDto("TSLA", "Tesla, Inc.", "240.20", "", "-0.5", "Acciones"),
-            VitrinaDto("MSFT", "Microsoft Corp.", "330.10", "", "0.8", "Acciones"),
-            VitrinaDto("GOOGL", "Alphabet Inc.", "135.00", "", "0.3", "Acciones"),
-            VitrinaDto("AMZN", "Amazon.com Inc.", "145.20", "", "1.5", "Acciones"),
-            VitrinaDto("NVDA", "NVIDIA Corp.", "450.50", "", "2.1", "Acciones")
+            VitrinaDto("AAL", "American Airlines Group Inc.", "396.84", "", "0.57", "Acciones"),
+            VitrinaDto("AMRC", "Americanino Apparel", "150.00", "", "0.18", "Acciones"),
+            VitrinaDto("AMZN", "Amazon", "854.08", "", "0.14", "Acciones"),
+            VitrinaDto("ABNB", "Airbnb Inc.", "130.00", "", "-0.27", "Acciones"),
+            VitrinaDto("ARA", "Aurora Group", "90.00", "", "-0.06", "Acciones")
         )
-        val filtered = allAssets.filter {
+        val filtered = if (query.isEmpty()) allAssets else allAssets.filter {
             it.nemo.contains(query, ignoreCase = true) || it.nombre.contains(query, ignoreCase = true)
         }
         return Response.success(
@@ -91,21 +91,21 @@ class FakeApiService : ApiService {
         return Response.success(
             VitrinaDetailDto(
                 simbolo = ticker,
-                nombre = "Empresa $ticker",
+                nombre = if (ticker == "AAL") "American Airlines Group Inc." else "Empresa $ticker",
                 categoria = "Acciones",
-                precio = "150.0",
-                retornoPorcentaje = "12.0",
-                retornoMonto = "18.0",
-                descripcion = "Descripción detallada de $ticker. Una empresa líder en su sector.",
-                apertura = "148.5",
+                precio = "396.84",
+                retornoPorcentaje = "0.57",
+                retornoMonto = "0.25",
+                descripcion = "American Airlines Group Inc. is a major American airline holding company headquartered in Fort Worth, Texas.",
+                apertura = "395.0",
                 volumen = "1000000",
-                marketCap = "1T",
-                precioMasAlto = "155.0",
-                precioMasBajo = "147.0",
-                maximoAnual = "180.0",
-                sector = "Tecnología",
-                industria = "Software",
-                montoMinimoDeOrden = "10.0",
+                marketCap = "10B",
+                precioMasAlto = "400.0",
+                precioMasBajo = "390.0",
+                maximoAnual = "450.0",
+                sector = "Transporte",
+                industria = "Aerolíneas",
+                montoMinimoDeOrden = "1.0",
                 detalleCliente = null
             )
         )

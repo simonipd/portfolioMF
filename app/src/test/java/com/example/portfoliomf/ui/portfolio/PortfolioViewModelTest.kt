@@ -39,7 +39,6 @@ class PortfolioViewModelTest {
 
     @Test
     fun `loadData updates uiState with success data`() = runTest {
-        // Given
         val mockPortfolio = PortfolioSummary(
             portfolioValue = "100.00",
             equity = "100.00",
@@ -61,11 +60,9 @@ class PortfolioViewModelTest {
         coEvery { repository.getBalance() } returns NetworkResult.Success(mockBalance)
         coEvery { repository.getPositions() } returns NetworkResult.Success(mockPositions)
 
-        // When
         val viewModel = PortfolioViewModel(repository)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         viewModel.uiState.test {
             val state = awaitItem()
             assertFalse(state.isLoading)
@@ -77,16 +74,13 @@ class PortfolioViewModelTest {
 
     @Test
     fun `loadData updates uiState with error message when repository fails`() = runTest {
-        // Given
         coEvery { repository.getPortfolio() } returns NetworkResult.Error(message = "Portfolio Error")
         coEvery { repository.getBalance() } returns NetworkResult.Error(message = "Balance Error")
         coEvery { repository.getPositions() } returns NetworkResult.Error(message = "Positions Error")
 
-        // When
         val viewModel = PortfolioViewModel(repository)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         viewModel.uiState.test {
             val state = awaitItem()
             assertFalse(state.isLoading)

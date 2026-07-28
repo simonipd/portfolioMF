@@ -1,7 +1,5 @@
 package com.example.portfoliomf.data.models
 
-import com.google.gson.annotations.SerializedName
-
 // --- Portfolio and Balances ---
 
 data class PortfolioSummary(

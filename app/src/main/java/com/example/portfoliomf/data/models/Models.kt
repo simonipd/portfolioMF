@@ -2,115 +2,115 @@ package com.example.portfoliomf.data.models
 
 import com.google.gson.annotations.SerializedName
 
-// --- Portafolio y Saldos ---
+// --- Portfolio and Balances ---
 
-data class ResumenPortafolio(
-    val valorPortafolio: String?,
-    val patrimonio: String?,
-    val variacionIntraday: String?,
-    val variacionIntradayPorcentaje: String?,
-    val ordenesEnTransito: Int,
-    val evolucion: List<PuntoEvolucion>
+data class PortfolioSummary(
+    val portfolioValue: String?,
+    val equity: String?,
+    val intradayVariation: String?,
+    val intradayVariationPercentage: String?,
+    val ordersInTransit: Int,
+    val performance: List<PerformancePoint>
 )
 
-data class PuntoEvolucion(
-    val fecha: String,
-    val valorPortafolio: String
+data class PerformancePoint(
+    val date: String,
+    val portfolioValue: String
 )
 
 data class BalanceResponse(
-    val disponibleParaOperarUsd: String,
-    val disponibleParaRetirarUsd: String,
+    val availableToTradeUsd: String,
+    val availableToWithdrawUsd: String,
     val balanceUsd: String,
-    val actualizadoEn: String
+    val updatedAt: String
 )
 
-data class PosicionItem(
-    val nemo: String,
-    val nombre: String,
-    val categoria: String,
+data class PositionItem(
+    val ticker: String,
+    val name: String,
+    val category: String,
     val logo: String?,
-    val valorActual: String,
-    val variacionIntraday: String,
-    val variacionIntradayPorcentaje: String
+    val currentValue: String,
+    val intradayVariation: String,
+    val intradayVariationPercentage: String
 )
 
-data class PaginatedPosicionesResponse(
-    val limite: Int,
-    val conteo: Int,
-    val pagina: Int,
-    val resultados: List<PosicionItem>
-)
-
-// --- Vitrina (Búsqueda y Detalle) ---
-
-data class VitrinaDto(
-    val nemo: String,
-    val nombre: String,
-    val precio: String,
-    val logo: String,
-    val variacionDia: String,
-    val categoria: String
-)
-
-data class PaginatedVitrinaResponse(
-    val limite: Int,
+data class PaginatedPositionsResponse(
+    val limit: Int,
     val count: Int,
-    val pagina: Int,
-    val results: List<VitrinaDto>
+    val page: Int,
+    val results: List<PositionItem>
 )
 
-data class VitrinaDetailDto(
-    val simbolo: String,
-    val nombre: String,
-    val categoria: String,
-    val precio: String,
-    val retornoPorcentaje: String,
-    val retornoMonto: String,
-    val descripcion: String,
-    val apertura: String?,
-    val volumen: String?,
+// --- Asset Gallery (Search and Detail) ---
+
+data class AssetDto(
+    val ticker: String,
+    val name: String,
+    val price: String,
+    val logo: String,
+    val dayVariation: String,
+    val category: String
+)
+
+data class PaginatedAssetResponse(
+    val limit: Int,
+    val count: Int,
+    val page: Int,
+    val results: List<AssetDto>
+)
+
+data class AssetDetailDto(
+    val symbol: String,
+    val name: String,
+    val category: String,
+    val price: String,
+    val returnPercentage: String,
+    val returnAmount: String,
+    val description: String,
+    val open: String?,
+    val volume: String?,
     val marketCap: String?,
-    val precioMasAlto: String?,
-    val precioMasBajo: String?,
-    val maximoAnual: String?,
+    val highPrice: String?,
+    val lowPrice: String?,
+    val annualMax: String?,
     val sector: String?,
-    val industria: String?,
-    val montoMinimoDeOrden: String,
-    val detalleCliente: DetalleCliente?
+    val industry: String?,
+    val minimumOrderAmount: String,
+    val customerDetail: CustomerDetail?
 )
 
-data class DetalleCliente(
-    val disponibleParaOperarUsd: String,
-    val cantidadAcciones: String?,
-    val valorDeMercado: String?,
-    val costoBase: String?,
-    val gananciaOperdida: String?
+data class CustomerDetail(
+    val availableToTradeUsd: String,
+    val shareCount: String?,
+    val marketValue: String?,
+    val costBasis: String?,
+    val profitOrLoss: String?
 )
 
-// --- Órdenes ---
+// --- Orders ---
 
-data class OrdenRequest(
-    val nemo: String,
-    val lado: String, // "COMPRA" o "VENTA"
-    val monto: String? = null,
-    val cantidad: String? = null
+data class OrderRequest(
+    val ticker: String,
+    val side: String, // "BUY" or "SELL"
+    val amount: String? = null,
+    val quantity: String? = null
 )
 
-data class OrdenResponse(
+data class OrderResponse(
     val id: String,
-    val nemo: String,
-    val nombreInstrumento: String,
-    val estado: String,
-    val monto: String?,
-    val cantidad: String,
-    val fechaRecepcion: String
+    val ticker: String,
+    val instrumentName: String,
+    val status: String,
+    val amount: String?,
+    val quantity: String,
+    val receivedAt: String
 )
 
-// --- Errores ---
+// --- Errors ---
 
 data class ErrorDto(
-    val codigoError: String,
-    val mensajeError: String,
-    val campos: Map<String, List<String>>? = null
+    val errorCode: String,
+    val errorMessage: String,
+    val fields: Map<String, List<String>>? = null
 )

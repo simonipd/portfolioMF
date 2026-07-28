@@ -30,27 +30,28 @@ class MockInterceptor : Interceptor {
         try {
             val result = runBlocking {
                 when {
-                    path.endsWith("/cuentas/portafolio") -> {
-                        val periodo = request.url.queryParameter("periodo") ?: "YTD"
-                        gson.toJson(mockService.getPortafolio(periodo))
+                    path.endsWith("/accounts/portfolio") -> {
+                        val period = request.url.queryParameter("period") ?: "YTD"
+                        gson.toJson(mockService.getPortfolio(period))
                     }
-                    path.endsWith("/cuentas/saldo") -> {
-                        gson.toJson(mockService.getSaldo())
+                    path.endsWith("/accounts/balance") -> {
+                        gson.toJson(mockService.getBalance())
                     }
-                    path.endsWith("/cuentas/posiciones") -> {
-                        gson.toJson(mockService.getPosiciones())
+                    path.endsWith("/accounts/positions") -> {
+                        gson.toJson(mockService.getPositions())
                     }
-                    path.endsWith("/vitrina") && method == "GET" -> {
-                        val busqueda = request.url.queryParameter("busqueda") ?: ""
-                        gson.toJson(mockService.searchVitrina(busqueda))
+                    path.endsWith("/showcase") && method == "GET" -> {
+                        val query = request.url.queryParameter("search") ?: ""
+                        gson.toJson(mockService.searchAssets(query))
                     }
-                    path.contains("/vitrina/") -> {
+                    path.contains("/showcase/") -> {
                         val ticker = path.substringAfterLast("/")
-                        gson.toJson(mockService.getVitrinaDetail(ticker))
+                        gson.toJson(mockService.getAssetDetail(ticker))
                     }
-                    path.endsWith("/ordenes/crear") && method == "POST" -> {
+                    path.endsWith("/orders/create") && method == "POST" -> {
                         responseCode = 201
-                        gson.toJson(mockService.crearOrden(OrdenCrearRequest("AAPL", "COMPRA")))
+                        // Simplified for mock
+                        gson.toJson(mockService.createOrder(OrderCreateRequest("AAPL", "BUY")))
                     }
                     else -> {
                         null
@@ -66,8 +67,8 @@ class MockInterceptor : Interceptor {
             
         } catch (e: Exception) {
             val errorResponse = ErrorResponse(
-                codigoError = e.message ?: "UNKNOWN_ERROR",
-                mensajeError = "Error in mock service: ${e.message}"
+                errorCode = "MOCK_ERROR",
+                errorMessage = "Error in mock service: ${e.message}"
             )
             return Response.Builder()
                 .code(400)
@@ -79,7 +80,7 @@ class MockInterceptor : Interceptor {
                 .build()
         }
 
-        // Simular latencia
+        // Simulate latency
         Thread.sleep(300)
 
         return Response.Builder()

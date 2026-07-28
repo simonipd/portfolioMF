@@ -12,8 +12,8 @@ import java.util.UUID
 
 class AssetViewModel(private val repository: PortfolioRepository) : ViewModel() {
 
-    var searchResults by mutableStateOf<List<VitrinaDto>>(emptyList())
-    var selectedAssetDetails by mutableStateOf<VitrinaDetailDto?>(null)
+    var searchResults by mutableStateOf<List<AssetDto>>(emptyList())
+    var selectedAssetDetails by mutableStateOf<AssetDetailDto?>(null)
     var isSearching by mutableStateOf(false)
     var orderStatus by mutableStateOf<String?>(null)
     var orderError by mutableStateOf<String?>(null)
@@ -52,28 +52,28 @@ class AssetViewModel(private val repository: PortfolioRepository) : ViewModel() 
         }
     }
 
-    fun buyAsset(nemo: String, monto: String) {
+    fun buyAsset(ticker: String, amount: String) {
         viewModelScope.launch {
             isPlacingOrder = true
             orderStatus = null
             orderError = null
             try {
                 val idempotencyKey = UUID.randomUUID().toString()
-                val request = OrdenRequest(nemo = nemo, lado = "COMPRA", monto = monto)
+                val request = OrderRequest(ticker = ticker, side = "BUY", amount = amount)
                 val response = repository.createOrder(idempotencyKey, request)
                 
                 if (response.isSuccessful) {
-                    orderStatus = "¡Orden Exitosa! ID: ${response.body()?.id}"
+                    orderStatus = "Order Successful! ID: ${response.body()?.id}"
                 } else {
                     val errorBody = response.errorBody()?.string()
-                    orderError = if (errorBody?.contains("MERCADO_CERRADO") == true) {
-                        "Error: El mercado se encuentra cerrado actualmente."
+                    orderError = if (errorBody?.contains("MARKET_CLOSED") == true) {
+                        "Error: The market is currently closed."
                     } else {
-                        "Error al procesar la orden: ${response.code()}"
+                        "Error processing order: ${response.code()}"
                     }
                 }
             } catch (e: Exception) {
-                orderError = "Error de conexión: ${e.message}"
+                orderError = "Connection error: ${e.message}"
             } finally {
                 isPlacingOrder = false
             }

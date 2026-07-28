@@ -73,7 +73,7 @@ fun AssetDetailScreen(
                 title = { Text(ticker, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver", tint = Color.White)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -98,7 +98,7 @@ fun AssetDetailScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 
                 Text(
-                    text = details.nombre,
+                    text = details.name,
                     style = MaterialTheme.typography.headlineSmall,
                     color = GrayText,
                     modifier = Modifier.fillMaxWidth(),
@@ -106,7 +106,7 @@ fun AssetDetailScreen(
                 )
                 
                 Text(
-                    text = "USD $${details.precio}",
+                    text = "USD $${details.price}",
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth(),
@@ -118,7 +118,7 @@ fun AssetDetailScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val isPositive = !details.retornoPorcentaje.startsWith("-")
+                    val isPositive = !details.returnPercentage.startsWith("-")
                     val color = if (isPositive) PositiveGreen else NegativeRed
                     Icon(
                         imageVector = if (isPositive) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
@@ -127,7 +127,7 @@ fun AssetDetailScreen(
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = "${details.retornoMonto} (${details.retornoPorcentaje}%)",
+                        text = "${details.returnAmount} (${details.returnPercentage}%)",
                         color = color,
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp
@@ -137,7 +137,7 @@ fun AssetDetailScreen(
                 Spacer(modifier = Modifier.height(40.dp))
                 
                 Text(
-                    text = "RESUMEN",
+                    text = "SUMMARY",
                     style = MaterialTheme.typography.labelLarge,
                     color = GrayText,
                     fontWeight = FontWeight.Bold
@@ -146,7 +146,7 @@ fun AssetDetailScreen(
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 Text(
-                    text = details.descripcion,
+                    text = details.description,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White,
                     lineHeight = 22.sp
@@ -161,7 +161,7 @@ fun AssetDetailScreen(
                 ) {
                     Column(modifier = Modifier.padding(20.dp)) {
                         Text(
-                            text = "COMPRAR",
+                            text = "BUY",
                             style = MaterialTheme.typography.labelLarge,
                             color = GrayText,
                             fontWeight = FontWeight.Bold
@@ -172,7 +172,7 @@ fun AssetDetailScreen(
                         OutlinedTextField(
                             value = amount,
                             onValueChange = { amount = it },
-                            placeholder = { Text("Monto a invertir (USD)", color = GrayText) },
+                            placeholder = { Text("Amount to invest (USD)", color = GrayText) },
                             modifier = Modifier.fillMaxWidth(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             singleLine = true,
@@ -202,7 +202,7 @@ fun AssetDetailScreen(
                             if (viewModel.isPlacingOrder) {
                                 CircularProgressIndicator(modifier = Modifier.size(24.dp), color = DarkBackground)
                             } else {
-                                Text("ORDENAR COMPRA", fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
+                                Text("PLACE BUY ORDER", fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
                             }
                         }
                     }

@@ -7,19 +7,19 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
 class FakeApiService : ApiService {
-    override suspend fun getPortfolio(customerId: String, periodo: String): Response<ResumenPortafolio> {
+    override suspend fun getPortfolio(customerId: String, period: String): Response<PortfolioSummary> {
         delay(500)
         return Response.success(
-            ResumenPortafolio(
-                valorPortafolio = "40.433,00",
-                patrimonio = "40.433,00",
-                variacionIntraday = "7.06",
-                variacionIntradayPorcentaje = "0,04",
-                ordenesEnTransito = 0,
-                evolucion = listOf(
-                    PuntoEvolucion("2023-01-01", "35000.0"),
-                    PuntoEvolucion("2023-06-01", "38000.0"),
-                    PuntoEvolucion("2023-10-01", "40433.0")
+            PortfolioSummary(
+                portfolioValue = "40.433,00",
+                equity = "40.433,00",
+                intradayVariation = "7.06",
+                intradayVariationPercentage = "0,04",
+                ordersInTransit = 0,
+                performance = listOf(
+                    PerformancePoint("2023-01-01", "35000.0"),
+                    PerformancePoint("2023-06-01", "38000.0"),
+                    PerformancePoint("2023-10-01", "40433.0")
                 )
             )
         )
@@ -29,105 +29,105 @@ class FakeApiService : ApiService {
         delay(300)
         return Response.success(
             BalanceResponse(
-                disponibleParaOperarUsd = "40.455,21",
-                disponibleParaRetirarUsd = "35.000,00",
+                availableToTradeUsd = "40.455,21",
+                availableToWithdrawUsd = "35.000,00",
                 balanceUsd = "40.455,21",
-                actualizadoEn = "2023-10-27T10:00:00Z"
+                updatedAt = "2023-10-27T10:00:00Z"
             )
         )
     }
 
     override suspend fun getPositions(
         customerId: String,
-        limite: Int,
-        pagina: Int
-    ): Response<PaginatedPosicionesResponse> {
+        limit: Int,
+        page: Int
+    ): Response<PaginatedPositionsResponse> {
         delay(400)
-        val positions = listOf(
-            PosicionItem("AAL", "American Airlines Group Inc.", "Transporte", null, "396.84", "0.25", "0.57"),
-            PosicionItem("AMZN", "Amazon", "E-commerce", null, "854.08", "0.21", "0.14"),
-            PosicionItem("TSLA", "Tesla", "Automotriz", null, "576.28", "-1.33", "-0.27"),
-            PosicionItem("APPL", "Apple", "Tecnología", null, "782.01", "1.04", "0.06"),
-            PosicionItem("EXPI", "Exp World Holdings, Inc.", "Bienes Raíces", null, "219.78", "0.15", "0.10")
+        val results = listOf(
+            PositionItem("AAL", "American Airlines Group Inc.", "Transport", null, "396.84", "0.25", "0.57"),
+            PositionItem("AMZN", "Amazon", "E-commerce", null, "854.08", "0.21", "0.14"),
+            PositionItem("TSLA", "Tesla", "Automotive", null, "576.28", "-1.33", "-0.27"),
+            PositionItem("APPL", "Apple", "Technology", null, "782.01", "1.04", "0.06"),
+            PositionItem("EXPI", "Exp World Holdings, Inc.", "Real Estate", null, "219.78", "0.15", "0.10")
         )
         return Response.success(
-            PaginatedPosicionesResponse(
-                limite = limite,
-                conteo = positions.size,
-                pagina = pagina,
-                resultados = positions
+            PaginatedPositionsResponse(
+                limit = limit,
+                count = results.size,
+                page = page,
+                results = results
             )
         )
     }
 
     override suspend fun searchAssets(
         query: String,
-        limite: Int,
-        pagina: Int
-    ): Response<PaginatedVitrinaResponse> {
+        limit: Int,
+        page: Int
+    ): Response<PaginatedAssetResponse> {
         delay(300)
         val allAssets = listOf(
-            VitrinaDto("AAL", "American Airlines Group Inc.", "396.84", "", "0.57", "Acciones"),
-            VitrinaDto("AMRC", "Americanino Apparel", "150.00", "", "0.18", "Acciones"),
-            VitrinaDto("AMZN", "Amazon", "854.08", "", "0.14", "Acciones"),
-            VitrinaDto("ABNB", "Airbnb Inc.", "130.00", "", "-0.27", "Acciones"),
-            VitrinaDto("ARA", "Aurora Group", "90.00", "", "-0.06", "Acciones")
+            AssetDto("AAL", "American Airlines Group Inc.", "396.84", "", "0.57", "Stocks"),
+            AssetDto("AMRC", "Americanino Apparel", "150.00", "", "0.18", "Stocks"),
+            AssetDto("AMZN", "Amazon", "854.08", "", "0.14", "Stocks"),
+            AssetDto("ABNB", "Airbnb Inc.", "130.00", "", "-0.27", "Stocks"),
+            AssetDto("ARA", "Aurora Group", "90.00", "", "-0.06", "Stocks")
         )
         val filtered = if (query.isEmpty()) allAssets else allAssets.filter {
-            it.nemo.contains(query, ignoreCase = true) || it.nombre.contains(query, ignoreCase = true)
+            it.ticker.contains(query, ignoreCase = true) || it.name.contains(query, ignoreCase = true)
         }
         return Response.success(
-            PaginatedVitrinaResponse(
-                limite = limite,
+            PaginatedAssetResponse(
+                limit = limit,
                 count = filtered.size,
-                pagina = pagina,
+                page = page,
                 results = filtered
             )
         )
     }
 
-    override suspend fun getAssetDetails(ticker: String): Response<VitrinaDetailDto> {
+    override suspend fun getAssetDetails(ticker: String): Response<AssetDetailDto> {
         delay(300)
         return Response.success(
-            VitrinaDetailDto(
-                simbolo = ticker,
-                nombre = if (ticker == "AAL") "American Airlines Group Inc." else "Empresa $ticker",
-                categoria = "Acciones",
-                precio = "396.84",
-                retornoPorcentaje = "0.57",
-                retornoMonto = "0.25",
-                descripcion = "American Airlines Group Inc. is a major American airline holding company headquartered in Fort Worth, Texas.",
-                apertura = "395.0",
-                volumen = "1000000",
+            AssetDetailDto(
+                symbol = ticker,
+                name = if (ticker == "AAL") "American Airlines Group Inc." else "Company $ticker",
+                category = "Stocks",
+                price = "396.84",
+                returnPercentage = "0.57",
+                returnAmount = "0.25",
+                description = "American Airlines Group Inc. is a major American airline holding company headquartered in Fort Worth, Texas.",
+                open = "395.0",
+                volume = "1000000",
                 marketCap = "10B",
-                precioMasAlto = "400.0",
-                precioMasBajo = "390.0",
-                maximoAnual = "450.0",
-                sector = "Transporte",
-                industria = "Aerolíneas",
-                montoMinimoDeOrden = "1.0",
-                detalleCliente = null
+                highPrice = "400.0",
+                lowPrice = "390.0",
+                annualMax = "450.0",
+                sector = "Transport",
+                industry = "Airlines",
+                minimumOrderAmount = "1.0",
+                customerDetail = null
             )
         )
     }
 
     override suspend fun createOrder(
         idempotencyKey: String,
-        orderRequest: OrdenRequest
-    ): Response<OrdenResponse> {
+        orderRequest: OrderRequest
+    ): Response<OrderResponse> {
         delay(1000)
-        return if (orderRequest.nemo == "ERROR") {
-            Response.error(400, "{\"codigoError\": \"MERCADO_CERRADO\", \"mensajeError\": \"El mercado está cerrado\"}".toResponseBody("application/json".toMediaTypeOrNull()))
+        return if (orderRequest.ticker == "ERROR") {
+            Response.error(400, "{\"errorCode\": \"MARKET_CLOSED\", \"errorMessage\": \"The market is currently closed\"}".toResponseBody("application/json".toMediaTypeOrNull()))
         } else {
             Response.success(
-                OrdenResponse(
+                OrderResponse(
                     id = "ord-123",
-                    nemo = orderRequest.nemo,
-                    nombreInstrumento = "Instrumento ${orderRequest.nemo}",
-                    estado = "COMPLETADA",
-                    monto = orderRequest.monto,
-                    cantidad = orderRequest.cantidad ?: "1",
-                    fechaRecepcion = "2023-10-27T12:00:00Z"
+                    ticker = orderRequest.ticker,
+                    instrumentName = "Instrument ${orderRequest.ticker}",
+                    status = "COMPLETED",
+                    amount = orderRequest.amount,
+                    quantity = orderRequest.quantity ?: "1",
+                    receivedAt = "2023-10-27T12:00:00Z"
                 )
             )
         }

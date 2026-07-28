@@ -40,7 +40,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.portfoliomf.data.models.PosicionItem
+import com.example.portfoliomf.data.models.PositionItem
 import com.example.portfoliomf.ui.theme.DarkBackground
 import com.example.portfoliomf.ui.theme.DarkGray
 import com.example.portfoliomf.ui.theme.GrayText
@@ -56,7 +56,7 @@ fun PortfolioScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Patrimonio", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
+                title = { Text("Portfolio", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
                 actions = {
                     Text("USD / CLP", color = PrimaryGold, modifier = Modifier.padding(end = 16.dp), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 },
@@ -77,8 +77,8 @@ fun PortfolioScreen(
             item {
                 Spacer(modifier = Modifier.height(16.dp))
                 PortfolioValueHeader(
-                    value = viewModel.portfolioState?.valorPortafolio ?: "40.433,00",
-                    change = "7.06 (0,04%) Hoy"
+                    value = viewModel.portfolioState?.portfolioValue ?: "40,433.00",
+                    change = "7.06 (0.04%) Today"
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 PerformanceChart()
@@ -145,11 +145,11 @@ fun TimeRangeSelector() {
 @Composable
 fun BuyingPowerSection() {
     Column {
-        Text("Poder de compra", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text("Buying Power", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         Spacer(Modifier.height(16.dp))
         Row(Modifier.fillMaxWidth()) {
-            BuyingPowerItem("US DOLLARS", "$40.455,21", Modifier.weight(1f))
-            BuyingPowerItem("PESO CHILENO", "$42.788,54", Modifier.weight(1f))
+            BuyingPowerItem("US DOLLARS", "$40,455.21", Modifier.weight(1f))
+            BuyingPowerItem("CHILEAN PESO", "$42,788.54", Modifier.weight(1f))
         }
     }
 }
@@ -165,9 +165,9 @@ fun BuyingPowerItem(label: String, value: String, modifier: Modifier) {
 @Composable
 fun PositionsHeader() {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Text("Posiciones", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text("Positions", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("VALOR DEL DÍA", color = GrayText, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            Text("DAY VALUE", color = GrayText, fontSize = 10.sp, fontWeight = FontWeight.Bold)
             Icon(Icons.Default.KeyboardArrowDown, null, tint = GrayText, modifier = Modifier.size(16.dp))
         }
     }
@@ -175,13 +175,13 @@ fun PositionsHeader() {
 }
 
 @Composable
-fun PositionItemPremium(position: PosicionItem) {
+fun PositionItemPremium(position: PositionItem) {
     Row(Modifier.fillMaxWidth().padding(vertical = 16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
         Column {
-            Text(position.nemo, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text(position.nombre, color = GrayText, fontSize = 12.sp)
+            Text(position.ticker, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(position.name, color = GrayText, fontSize = 12.sp)
         }
-        Text("$$${position.valorActual}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text("$$${position.currentValue}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
     }
 }
 
@@ -190,7 +190,7 @@ fun PortfolioBottomBar(onSearchClick: () -> Unit) {
     NavigationBar(containerColor = DarkBackground, tonalElevation = 0.dp) {
         NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.ShoppingCart, "Trade") }, label = { Text("Trade") })
         NavigationBarItem(selected = true, onClick = {}, icon = { Icon(Icons.Default.Menu, "Wallet") }, label = { Text("Wallet") })
-        NavigationBarItem(selected = false, onClick = onSearchClick, icon = { Icon(Icons.Default.Search, "Buscar") }, label = { Text("Buscar") })
-        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.AccountCircle, "Cuenta") }, label = { Text("Cuenta") })
+        NavigationBarItem(selected = false, onClick = onSearchClick, icon = { Icon(Icons.Default.Search, "Search") }, label = { Text("Search") })
+        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.AccountCircle, "Account") }, label = { Text("Account") })
     }
 }

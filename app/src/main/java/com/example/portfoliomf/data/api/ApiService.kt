@@ -5,39 +5,39 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
-    @GET("cuentas/portafolio")
+    @GET("accounts/portfolio")
     suspend fun getPortfolio(
         @Header("customer-id") customerId: String,
-        @Query("periodo") periodo: String = "YTD"
-    ): Response<ResumenPortafolio>
+        @Query("periodo") period: String = "YTD"
+    ): Response<PortfolioSummary>
 
-    @GET("cuentas/saldo")
+    @GET("accounts/balance")
     suspend fun getBalance(
         @Header("customer-id") customerId: String
     ): Response<BalanceResponse>
 
-    @GET("cuentas/posiciones")
+    @GET("accounts/positions")
     suspend fun getPositions(
         @Header("customer-id") customerId: String,
-        @Query("limite") limite: Int = 100,
-        @Query("pagina") pagina: Int = 1
-    ): Response<PaginatedPosicionesResponse>
+        @Query("limite") limit: Int = 100,
+        @Query("pagina") page: Int = 1
+    ): Response<PaginatedPositionsResponse>
 
-    @GET("vitrina")
+    @GET("showcase")
     suspend fun searchAssets(
-        @Query("busqueda") query: String,
-        @Query("limite") limite: Int = 100,
-        @Query("pagina") pagina: Int = 1
-    ): Response<PaginatedVitrinaResponse>
+        @Query("search") query: String,
+        @Query("limite") limit: Int = 100,
+        @Query("pagina") page: Int = 1
+    ): Response<PaginatedAssetResponse>
 
-    @GET("vitrina/{ticker}")
+    @GET("showcase/{ticker}")
     suspend fun getAssetDetails(
         @Path("ticker") ticker: String
-    ): Response<VitrinaDetailDto>
+    ): Response<AssetDetailDto>
 
-    @POST("ordenes/crear")
+    @POST("orders/create")
     suspend fun createOrder(
         @Header("Idempotency-Key") idempotencyKey: String,
-        @Body orderRequest: OrdenRequest
-    ): Response<OrdenResponse>
+        @Body orderRequest: OrderRequest
+    ): Response<OrderResponse>
 }

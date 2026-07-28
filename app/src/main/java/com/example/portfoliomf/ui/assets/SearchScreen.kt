@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.portfoliomf.data.models.VitrinaDto
+import com.example.portfoliomf.data.models.AssetDto
 import com.example.portfoliomf.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,10 +33,10 @@ fun SearchScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Buscar", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
+                title = { Text("Search", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = DarkBackground)
@@ -56,7 +56,7 @@ fun SearchScreen(
                     searchQuery = it
                     viewModel.searchAssets(it)
                 },
-                placeholder = { Text("Buscar...", color = GrayText) },
+                placeholder = { Text("Search...", color = GrayText) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
@@ -88,7 +88,7 @@ fun SearchScreen(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(viewModel.searchResults) { asset ->
-                    SearchAssetItem(asset, onClick = { onAssetClick(asset.nemo) })
+                    SearchAssetItem(asset, onClick = { onAssetClick(asset.ticker) })
                     Divider(color = DarkGray, thickness = 0.5.dp)
                 }
             }
@@ -97,7 +97,7 @@ fun SearchScreen(
 }
 
 @Composable
-fun SearchAssetItem(asset: VitrinaDto, onClick: () -> Unit) {
+fun SearchAssetItem(asset: AssetDto, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,9 +107,9 @@ fun SearchAssetItem(asset: VitrinaDto, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = asset.nemo, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(text = asset.ticker, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Text(
-                text = asset.nombre,
+                text = asset.name,
                 color = GrayText,
                 fontSize = 12.sp,
                 maxLines = 1
@@ -117,12 +117,12 @@ fun SearchAssetItem(asset: VitrinaDto, onClick: () -> Unit) {
         }
         
         Row(verticalAlignment = Alignment.CenterVertically) {
-            val isPositive = !asset.variacionDia.startsWith("-")
+            val isPositive = !asset.dayVariation.startsWith("-")
             val color = if (isPositive) PositiveGreen else NegativeRed
-            val sign = if (isPositive && asset.variacionDia != "0") "▲ " else if (!isPositive) "▼ " else ""
+            val sign = if (isPositive && asset.dayVariation != "0") "▲ " else if (!isPositive) "▼ " else ""
             
             Text(
-                text = "${sign}${asset.variacionDia.replace("-", "")}%",
+                text = "${sign}${asset.dayVariation.replace("-", "")}%",
                 color = color,
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,

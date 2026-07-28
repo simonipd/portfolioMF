@@ -4,143 +4,143 @@ import kotlinx.coroutines.delay
 import java.time.Instant
 import java.util.UUID
 
-// Sata Models
+// Data Models
 
 // Response Models
-data class PortafolioResponse(
-    val valorPortafolio: String?,
-    val patrimonio: String?,
-    val variacionIntraday: String?,
-    val variacionIntradayPorcentaje: String?,
-    val ordenesEnTransito: Int,
-    val evolucion: List<PuntoEvolucion>
+data class PortfolioResponse(
+    val portfolioValue: String?,
+    val equity: String?,
+    val intradayVariation: String?,
+    val intradayVariationPercentage: String?,
+    val ordersInTransit: Int,
+    val performance: List<PerformancePoint>
 )
 
-data class PuntoEvolucion(
-    val fecha: String,
-    val valorPortafolio: String
+data class PerformancePoint(
+    val date: String,
+    val portfolioValue: String
 )
 
-data class SaldoResponse(
+data class BalanceResponse(
     val balanceUsd: String,
-    val disponibleParaOperarUsd: String
+    val availableToTradeUsd: String
 )
 
-data class PosicionesResponse(
-    val limite: Int,
-    val conteo: Int,
-    val pagina: Int,
-    val siguiente: String?,
-    val anterior: String?,
-    val resultados: List<PosicionItem>
-)
-
-data class PosicionItem(
-    val nemo: String,
-    val nombre: String,
-    val categoria: String,
-    val logo: String?,
-    val valorActual: String,
-    val variacionIntraday: String,
-    val variacionIntradayPorcentaje: String
-)
-
-data class VitrinaSearchResponse(
-    val limite: Int,
+data class PositionsResponse(
+    val limit: Int,
     val count: Int,
-    val pagina: Int,
+    val page: Int,
     val next: String?,
     val previous: String?,
-    val results: List<VitrinaItem>
+    val results: List<PositionItem>
 )
 
-data class VitrinaItem(
-    val nemo: String,
-    val nombre: String,
-    val precio: String,
+data class PositionItem(
+    val ticker: String,
+    val name: String,
+    val category: String,
     val logo: String?,
-    val variacionDia: String,
-    val categoria: String
+    val currentValue: String,
+    val intradayVariation: String,
+    val intradayVariationPercentage: String
 )
 
-data class VitrinaDetailResponse(
-    val simbolo: String,
-    val nombre: String,
-    val categoria: String,
-    val precio: String,
-    val retornoPorcentaje: String,
-    val retornoMonto: String,
-    val descripcion: String,
-    val apertura: String?,
-    val volumen: String?,
+data class AssetSearchResponse(
+    val limit: Int,
+    val count: Int,
+    val page: Int,
+    val next: String?,
+    val previous: String?,
+    val results: List<AssetItem>
+)
+
+data class AssetItem(
+    val ticker: String,
+    val name: String,
+    val price: String,
+    val logo: String?,
+    val dayVariation: String,
+    val category: String
+)
+
+data class AssetDetailResponse(
+    val symbol: String,
+    val name: String,
+    val category: String,
+    val price: String,
+    val returnPercentage: String,
+    val returnAmount: String,
+    val description: String,
+    val open: String?,
+    val volume: String?,
     val marketCap: String?,
-    val precioMasAlto: String?,
-    val precioMasBajo: String?,
-    val maximoAnual: String?,
+    val highPrice: String?,
+    val lowPrice: String?,
+    val annualMax: String?,
     val sector: String?,
-    val industria: String?,
-    val montoMinimoDeOrden: String,
-    val detalleCliente: ClienteDetalle?
+    val industry: String?,
+    val minimumOrderAmount: String,
+    val customerDetail: CustomerDetail?
 )
 
-data class ClienteDetalle(
-    val disponibleParaOperarUsd: String,
-    val cantidadAcciones: String?,
-    val valorDeMercado: String?,
-    val costoBase: String?,
-    val gananciaOperdida: String?,
-    val pesoPorcentaje: String?
+data class CustomerDetail(
+    val availableToTradeUsd: String,
+    val shareCount: String?,
+    val marketValue: String?,
+    val costBasis: String?,
+    val profitOrLoss: String?,
+    val weightPercentage: String?
 )
 
 // Request Models
-data class OrdenSimulacionRequest(
-    val nemo: String,
-    val lado: String, // "COMPRAR" o "VENDER"
-    val cantidad: String? = null,
-    val monto: String? = null
+data class OrderSimulationRequest(
+    val ticker: String,
+    val side: String, // "BUY" or "SELL"
+    val quantity: String? = null,
+    val amount: String? = null
 )
 
-data class OrdenSimulacionResponse(
-    val nemo: String,
-    val nombreInstrumento: String?,
-    val categoria: String,
-    val lado: String,
-    val precio: String,
-    val cantidad: String,
-    val monto: String,
-    val comision: String,
-    val montoIva: String,
-    val ivaPorcentaje: String,
-    val subtotalCobros: String,
-    val montoEstimado: String,
-    val totalEstimado: String
+data class OrderSimulationResponse(
+    val ticker: String,
+    val instrumentName: String?,
+    val category: String,
+    val side: String,
+    val price: String,
+    val quantity: String,
+    val amount: String,
+    val commission: String,
+    val vatAmount: String,
+    val vatPercentage: String,
+    val feesSubtotal: String,
+    val estimatedAmount: String,
+    val estimatedTotal: String
 )
 
-data class OrdenCrearRequest(
-    val nemo: String,
-    val lado: String,
-    val cantidad: String? = null,
-    val monto: String? = null
+data class OrderCreateRequest(
+    val ticker: String,
+    val side: String,
+    val quantity: String? = null,
+    val amount: String? = null
 )
 
-data class OrdenCrearResponse(
+data class OrderCreateResponse(
     val id: String,
-    val nemo: String,
-    val categoria: String,
-    val nombreInstrumento: String,
-    val lado: String,
-    val cantidad: String,
-    val estado: String,
-    val monto: String,
-    val precioReferencia: String,
-    val numeroDeCuenta: String,
-    val fechaRecepcion: String
+    val ticker: String,
+    val category: String,
+    val instrumentName: String,
+    val side: String,
+    val quantity: String,
+    val status: String,
+    val amount: String,
+    val referencePrice: String,
+    val accountNumber: String,
+    val receivedAt: String
 )
 
 data class ErrorResponse(
-    val codigoError: String,
-    val mensajeError: String,
-    val campos: Map<String, List<String>>? = null
+    val errorCode: String,
+    val errorMessage: String,
+    val fields: Map<String, List<String>>? = null
 )
 
 // MARK: - Mock API Service
@@ -160,69 +160,69 @@ class PACEMockAPIService private constructor() {
     
     // MARK: - Portfolio Endpoints
     
-    suspend fun getPortafolio(periodo: String = "YTD"): PortafolioResponse {
-        // Simular delay de red
+    suspend fun getPortfolio(period: String = "YTD"): PortfolioResponse {
+        // Simulate network delay
         delay(300)
         
-        return PortafolioResponse(
-            valorPortafolio = "15320.00",
-            patrimonio = "16820.00",
-            variacionIntraday = "120.50",
-            variacionIntradayPorcentaje = "0.79",
-            ordenesEnTransito = 3,
-            evolucion = listOf(
-                PuntoEvolucion(fecha = "2025-03-01", valorPortafolio = "15000.00"),
-                PuntoEvolucion(fecha = "2025-03-05", valorPortafolio = "15100.00"),
-                PuntoEvolucion(fecha = "2025-03-10", valorPortafolio = "15320.00"),
+        return PortfolioResponse(
+            portfolioValue = "15320.00",
+            equity = "16820.00",
+            intradayVariation = "120.50",
+            intradayVariationPercentage = "0.79",
+            ordersInTransit = 3,
+            performance = listOf(
+                PerformancePoint(date = "2025-03-01", portfolioValue = "15000.00"),
+                PerformancePoint(date = "2025-03-05", portfolioValue = "15100.00"),
+                PerformancePoint(date = "2025-03-10", portfolioValue = "15320.00"),
             )
         )
     }
     
-    suspend fun getSaldo(): SaldoResponse {
+    suspend fun getBalance(): BalanceResponse {
         delay(200)
         
-        return SaldoResponse(
+        return BalanceResponse(
             balanceUsd = "1500.00",
-            disponibleParaOperarUsd = "1500.00"
+            availableToTradeUsd = "1500.00"
         )
     }
     
-    suspend fun getPosiciones(limite: Int = 100, pagina: Int = 1): PosicionesResponse {
+    suspend fun getPositions(limit: Int = 100, page: Int = 1): PositionsResponse {
         delay(400)
         
-        return PosicionesResponse(
-            limite = 100,
-            conteo = 3,
-            pagina = 1,
-            siguiente = null,
-            anterior = null,
-            resultados = listOf(
-                PosicionItem(
-                    nemo = "AAPL",
-                    nombre = "Apple Inc.",
-                    categoria = "ACCIONES",
+        return PositionsResponse(
+            limit = 100,
+            count = 3,
+            page = 1,
+            next = null,
+            previous = null,
+            results = listOf(
+                PositionItem(
+                    ticker = "AAPL",
+                    name = "Apple Inc.",
+                    category = "STOCKS",
                     logo = "https://cdn.example.com/icons/aapl.png",
-                    valorActual = "1523.40",
-                    variacionIntraday = "12.50",
-                    variacionIntradayPorcentaje = "0.83"
+                    currentValue = "1523.40",
+                    intradayVariation = "12.50",
+                    intradayVariationPercentage = "0.83"
                 ),
-                PosicionItem(
-                    nemo = "NVDA",
-                    nombre = "NVIDIA Corporation",
-                    categoria = "ACCIONES",
+                PositionItem(
+                    ticker = "NVDA",
+                    name = "NVIDIA Corporation",
+                    category = "STOCKS",
                     logo = "https://cdn.example.com/icons/nvda.png",
-                    valorActual = "5432.10",
-                    variacionIntraday = "-45.20",
-                    variacionIntradayPorcentaje = "-0.82"
+                    currentValue = "5432.10",
+                    intradayVariation = "-45.20",
+                    intradayVariationPercentage = "-0.82"
                 ),
-                PosicionItem(
-                    nemo = "VOO",
-                    nombre = "Vanguard S&P 500 ETF",
-                    categoria = "ETF",
+                PositionItem(
+                    ticker = "VOO",
+                    name = "Vanguard S&P 500 ETF",
+                    category = "ETF",
                     logo = "https://cdn.example.com/icons/voo.png",
-                    valorActual = "8364.50",
-                    variacionIntraday = "25.30",
-                    variacionIntradayPorcentaje = "0.30"
+                    currentValue = "8364.50",
+                    intradayVariation = "25.30",
+                    intradayVariationPercentage = "0.30"
                 )
             )
         )
@@ -230,235 +230,235 @@ class PACEMockAPIService private constructor() {
     
     // MARK: - Search Endpoints
     
-    suspend fun searchVitrina(
-        busqueda: String,
-        limite: Int = 100,
-        pagina: Int = 1
-    ): VitrinaSearchResponse {
+    suspend fun searchAssets(
+        query: String,
+        limit: Int = 100,
+        page: Int = 1
+    ): AssetSearchResponse {
         delay(350)
         
-        // Filtrar resultados basados en búsqueda
+        // Filter results based on search
         val allResults = listOf(
-            VitrinaItem(
-                nemo = "AAPL",
-                nombre = "Apple Inc.",
-                precio = "150.00",
+            AssetItem(
+                ticker = "AAPL",
+                name = "Apple Inc.",
+                price = "150.00",
                 logo = "/logo.png",
-                variacionDia = "0.01",
-                categoria = "ACCIONES"
+                dayVariation = "0.01",
+                category = "STOCKS"
             ),
-            VitrinaItem(
-                nemo = "MSFT",
-                nombre = "Microsoft Corporation",
-                precio = "320.00",
+            AssetItem(
+                ticker = "MSFT",
+                name = "Microsoft Corporation",
+                price = "320.00",
                 logo = "/logo.png",
-                variacionDia = "-0.02",
-                categoria = "ACCIONES"
+                dayVariation = "-0.02",
+                category = "STOCKS"
             ),
-            VitrinaItem(
-                nemo = "NVDA",
-                nombre = "NVIDIA Corporation",
-                precio = "410.00",
+            AssetItem(
+                ticker = "NVDA",
+                name = "NVIDIA Corporation",
+                price = "410.00",
                 logo = "/logo.png",
-                variacionDia = "0.05",
-                categoria = "ACCIONES"
+                dayVariation = "0.05",
+                category = "STOCKS"
             ),
-            VitrinaItem(
-                nemo = "VOO",
-                nombre = "Vanguard S&P 500 ETF",
-                precio = "410.00",
+            AssetItem(
+                ticker = "VOO",
+                name = "Vanguard S&P 500 ETF",
+                price = "410.00",
                 logo = "/logo.png",
-                variacionDia = "0.02",
-                categoria = "ETF"
+                dayVariation = "0.02",
+                category = "ETF"
             )
         )
         
         val filtered = allResults.filter { item ->
-            item.nemo.lowercase().contains(busqueda.lowercase()) ||
-            item.nombre.lowercase().contains(busqueda.lowercase())
+            item.ticker.lowercase().contains(query.lowercase()) ||
+            item.name.lowercase().contains(query.lowercase())
         }
         
-        return VitrinaSearchResponse(
-            limite = 100,
+        return AssetSearchResponse(
+            limit = 100,
             count = filtered.size,
-            pagina = 1,
+            page = 1,
             next = null,
             previous = null,
             results = filtered
         )
     }
     
-    suspend fun getVitrinaDetail(ticker: String): VitrinaDetailResponse {
+    suspend fun getAssetDetail(ticker: String): AssetDetailResponse {
         delay(300)
         
-        // Retornar detalles según el ticker
+        // Return detail based on ticker
         return when (ticker.uppercase()) {
-            "AAPL" -> VitrinaDetailResponse(
-                simbolo = "AAPL",
-                nombre = "Apple Inc.",
-                categoria = "ACCIONES",
-                precio = "150.00",
-                retornoPorcentaje = "0.01",
-                retornoMonto = "1.00",
-                descripcion = "Apple Inc. es una empresa tecnológica que fabrica y vende productos electrónicos y software.",
-                apertura = "149.00",
-                volumen = "12500000",
+            "AAPL" -> AssetDetailResponse(
+                symbol = "AAPL",
+                name = "Apple Inc.",
+                category = "STOCKS",
+                price = "150.00",
+                returnPercentage = "0.01",
+                returnAmount = "1.00",
+                description = "Apple Inc. is a technology company that designs, manufactures, and markets electronic products and software.",
+                open = "149.00",
+                volume = "12500000",
                 marketCap = "2800000000000",
-                precioMasAlto = "151.20",
-                precioMasBajo = "148.75",
-                maximoAnual = "198.23",
-                sector = "Tecnología",
-                industria = "Electrónica de consumo",
-                montoMinimoDeOrden = "5.00",
-                detalleCliente = ClienteDetalle(
-                    disponibleParaOperarUsd = "100000.00",
-                    cantidadAcciones = "100.02159248",
-                    valorDeMercado = "100000.00",
-                    costoBase = "100000.00",
-                    gananciaOperdida = "0.00",
-                    pesoPorcentaje = "25.50"
+                highPrice = "151.20",
+                lowPrice = "148.75",
+                annualMax = "198.23",
+                sector = "Technology",
+                industry = "Consumer Electronics",
+                minimumOrderAmount = "5.00",
+                customerDetail = CustomerDetail(
+                    availableToTradeUsd = "100000.00",
+                    shareCount = "100.02159248",
+                    marketValue = "100000.00",
+                    costBasis = "100000.00",
+                    profitOrLoss = "0.00",
+                    weightPercentage = "25.50"
                 )
             )
-            "MSFT" -> VitrinaDetailResponse(
-                simbolo = "MSFT",
-                nombre = "Microsoft Corporation",
-                categoria = "ACCIONES",
-                precio = "320.00",
-                retornoPorcentaje = "-0.02",
-                retornoMonto = "-6.40",
-                descripcion = "Microsoft Corporation es una empresa tecnológica multinacional que produce software de computadora y electrónica de consumo.",
-                apertura = "325.00",
-                volumen = "28000000",
+            "MSFT" -> AssetDetailResponse(
+                symbol = "MSFT",
+                name = "Microsoft Corporation",
+                category = "STOCKS",
+                price = "320.00",
+                returnPercentage = "-0.02",
+                returnAmount = "-6.40",
+                description = "Microsoft Corporation is a multinational technology company that produces computer software and consumer electronics.",
+                open = "325.00",
+                volume = "28000000",
                 marketCap = "2400000000000",
-                precioMasAlto = "328.00",
-                precioMasBajo = "318.00",
-                maximoAnual = "366.78",
-                sector = "Tecnología",
-                industria = "Software",
-                montoMinimoDeOrden = "10.00",
-                detalleCliente = null
+                highPrice = "328.00",
+                lowPrice = "318.00",
+                annualMax = "366.78",
+                sector = "Technology",
+                industry = "Software",
+                minimumOrderAmount = "10.00",
+                customerDetail = null
             )
-            "NVDA" -> VitrinaDetailResponse(
-                simbolo = "NVDA",
-                nombre = "NVIDIA Corporation",
-                categoria = "ACCIONES",
-                precio = "410.00",
-                retornoPorcentaje = "0.05",
-                retornoMonto = "20.00",
-                descripcion = "NVIDIA Corporation es una empresa de semiconductores líder en inteligencia artificial.",
-                apertura = "405.00",
-                volumen = "45000000",
+            "NVDA" -> AssetDetailResponse(
+                symbol = "NVDA",
+                name = "NVIDIA Corporation",
+                category = "STOCKS",
+                price = "410.00",
+                returnPercentage = "0.05",
+                returnAmount = "20.00",
+                description = "NVIDIA Corporation is a semiconductor company and a leader in artificial intelligence.",
+                open = "405.00",
+                volume = "45000000",
                 marketCap = "3200000000000",
-                precioMasAlto = "415.00",
-                precioMasBajo = "408.00",
-                maximoAnual = "520.00",
-                sector = "Tecnología",
-                industria = "Semiconductores",
-                montoMinimoDeOrden = "5.00",
-                detalleCliente = ClienteDetalle(
-                    disponibleParaOperarUsd = "100000.00",
-                    cantidadAcciones = "50.5",
-                    valorDeMercado = "20705.00",
-                    costoBase = "20000.00",
-                    gananciaOperdida = "705.00",
-                    pesoPorcentaje = "12.75"
+                highPrice = "415.00",
+                lowPrice = "408.00",
+                annualMax = "520.00",
+                sector = "Technology",
+                industry = "Semiconductors",
+                minimumOrderAmount = "5.00",
+                customerDetail = CustomerDetail(
+                    availableToTradeUsd = "100000.00",
+                    shareCount = "50.5",
+                    marketValue = "20705.00",
+                    costBasis = "20000.00",
+                    profitOrLoss = "705.00",
+                    weightPercentage = "12.75"
                 )
             )
-            "VOO" -> VitrinaDetailResponse(
-                simbolo = "VOO",
-                nombre = "Vanguard S&P 500 ETF",
-                categoria = "ETF",
-                precio = "410.00",
-                retornoPorcentaje = "0.02",
-                retornoMonto = "8.20",
-                descripcion = "Vanguard S&P 500 ETF es un fondo que rastrea el índice S&P 500.",
-                apertura = "408.00",
-                volumen = "5000000",
+            "VOO" -> AssetDetailResponse(
+                symbol = "VOO",
+                name = "Vanguard S&P 500 ETF",
+                category = "ETF",
+                price = "410.00",
+                returnPercentage = "0.02",
+                returnAmount = "8.20",
+                description = "Vanguard S&P 500 ETF is an exchange-traded fund that tracks the S&P 500 Index.",
+                open = "408.00",
+                volume = "5000000",
                 marketCap = "800000000000",
-                precioMasAlto = "412.00",
-                precioMasBajo = "407.00",
-                maximoAnual = "440.00",
-                sector = "Diversificado",
-                industria = "ETFs",
-                montoMinimoDeOrden = "1.00",
-                detalleCliente = null
+                highPrice = "412.00",
+                lowPrice = "407.00",
+                annualMax = "440.00",
+                sector = "Diversified",
+                industry = "ETFs",
+                minimumOrderAmount = "1.00",
+                customerDetail = null
             )
             "ERROR" -> {
-                throw Exception("MERCADO_CERRADO")
+                throw Exception("MARKET_CLOSED")
             }
-            else -> VitrinaDetailResponse(
-                simbolo = ticker.uppercase(),
-                nombre = "Activo Desconocido",
-                categoria = "ACCIONES",
-                precio = "0.00",
-                retornoPorcentaje = "0.00",
-                retornoMonto = "0.00",
-                descripcion = "Información no disponible",
-                apertura = null,
-                volumen = null,
+            else -> AssetDetailResponse(
+                symbol = ticker.uppercase(),
+                name = "Unknown Asset",
+                category = "STOCKS",
+                price = "0.00",
+                returnPercentage = "0.00",
+                returnAmount = "0.00",
+                description = "Information not available",
+                open = null,
+                volume = null,
                 marketCap = null,
-                precioMasAlto = null,
-                precioMasBajo = null,
-                maximoAnual = null,
+                highPrice = null,
+                lowPrice = null,
+                annualMax = null,
                 sector = null,
-                industria = null,
-                montoMinimoDeOrden = "5.00",
-                detalleCliente = null
+                industry = null,
+                minimumOrderAmount = "5.00",
+                customerDetail = null
             )
         }
     }
     
     // MARK: - Order Endpoints
     
-    suspend fun simulateOrder(request: OrdenSimulacionRequest): OrdenSimulacionResponse {
+    suspend fun simulateOrder(request: OrderSimulationRequest): OrderSimulationResponse {
         delay(400)
         
-        val precio = "410.01"
-        val cantidad = request.cantidad ?: "1.0007"
-        val monto = request.monto ?: "400.00"
-        val comision = "1.05"
-        val montoIva = "0.20"
+        val price = "410.01"
+        val quantity = request.quantity ?: "1.0007"
+        val amount = request.amount ?: "400.00"
+        val commission = "1.05"
+        val vatAmount = "0.20"
         
-        return OrdenSimulacionResponse(
-            nemo = request.nemo,
-            nombreInstrumento = "NVIDIA Corporation",
-            categoria = "ACCIONES",
-            lado = request.lado,
-            precio = precio,
-            cantidad = cantidad,
-            monto = monto,
-            comision = comision,
-            montoIva = montoIva,
-            ivaPorcentaje = "19.00",
-            subtotalCobros = "1.25",
-            montoEstimado = monto,
-            totalEstimado = "401.25"
+        return OrderSimulationResponse(
+            ticker = request.ticker,
+            instrumentName = "NVIDIA Corporation",
+            category = "STOCKS",
+            side = request.side,
+            price = price,
+            quantity = quantity,
+            amount = amount,
+            commission = commission,
+            vatAmount = vatAmount,
+            vatPercentage = "19.00",
+            feesSubtotal = "1.25",
+            estimatedAmount = amount,
+            estimatedTotal = "401.25"
         )
     }
     
-    suspend fun crearOrden(request: OrdenCrearRequest): OrdenCrearResponse {
+    suspend fun createOrder(request: OrderCreateRequest): OrderCreateResponse {
         delay(500)
         
-        if (request.nemo == "ERROR") {
-             throw Exception("MERCADO_CERRADO")
+        if (request.ticker == "ERROR") {
+             throw Exception("MARKET_CLOSED")
         }
 
-        // Generar UUID aleatorio para la orden
+        // Generate random UUID for the order
         val orderId = UUID.randomUUID().toString()
         val timestamp = Instant.now().toString()
         
-        return OrdenCrearResponse(
+        return OrderCreateResponse(
             id = orderId,
-            nemo = request.nemo,
-            categoria = "ACCIONES",
-            nombreInstrumento = if (request.nemo == "NVDA") "NVIDIA Corporation" else "Apple Inc.",
-            lado = request.lado,
-            cantidad = request.cantidad ?: "1.4",
-            estado = "INGRESADA",
-            monto = request.monto ?: "400.00",
-            precioReferencia = "150.00",
-            numeroDeCuenta = "VQBU000001",
-            fechaRecepcion = timestamp
+            ticker = request.ticker,
+            category = "STOCKS",
+            instrumentName = if (request.ticker == "NVDA") "NVIDIA Corporation" else "Apple Inc.",
+            side = request.side,
+            quantity = request.quantity ?: "1.4",
+            status = "SUBMITTED",
+            amount = request.amount ?: "400.00",
+            referencePrice = "150.00",
+            accountNumber = "VQBU000001",
+            receivedAt = timestamp
         )
     }
     

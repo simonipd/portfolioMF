@@ -56,7 +56,7 @@ fun PortfolioScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Portfolio", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
+                title = { Text("Patrimonio", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
                 actions = {
                     Text("USD / CLP", color = PrimaryGold, modifier = Modifier.padding(end = 16.dp), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 },
@@ -77,8 +77,8 @@ fun PortfolioScreen(
             item {
                 Spacer(modifier = Modifier.height(16.dp))
                 PortfolioValueHeader(
-                    value = viewModel.portfolioState?.portfolioValue ?: "40,433.00",
-                    change = "7.06 (0.04%) Today"
+                    value = viewModel.portfolioState?.portfolioValue ?: "40.433,00",
+                    change = "7.06 (0,04%) Hoy"
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 PerformanceChart()
@@ -145,11 +145,11 @@ fun TimeRangeSelector() {
 @Composable
 fun BuyingPowerSection() {
     Column {
-        Text("Buying Power", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text("Poder de compra", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         Spacer(Modifier.height(16.dp))
         Row(Modifier.fillMaxWidth()) {
-            BuyingPowerItem("US DOLLARS", "$40,455.21", Modifier.weight(1f))
-            BuyingPowerItem("CHILEAN PESO", "$42,788.54", Modifier.weight(1f))
+            BuyingPowerItem("US DOLLARS", "$40.455,21", Modifier.weight(1f))
+            BuyingPowerItem("PESO CHILENO", "$42.788,54", Modifier.weight(1f))
         }
     }
 }
@@ -165,9 +165,9 @@ fun BuyingPowerItem(label: String, value: String, modifier: Modifier) {
 @Composable
 fun PositionsHeader() {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Text("Positions", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text("Posiciones", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("DAY VALUE", color = GrayText, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            Text("VALOR DEL DÍA", color = GrayText, fontSize = 10.sp, fontWeight = FontWeight.Bold)
             Icon(Icons.Default.KeyboardArrowDown, null, tint = GrayText, modifier = Modifier.size(16.dp))
         }
     }

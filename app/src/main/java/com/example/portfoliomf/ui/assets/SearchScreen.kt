@@ -33,10 +33,10 @@ fun SearchScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Search", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
+                title = { Text("Buscar", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = DarkBackground)
@@ -56,7 +56,7 @@ fun SearchScreen(
                     searchQuery = it
                     viewModel.searchAssets(it)
                 },
-                placeholder = { Text("Search...", color = GrayText) },
+                placeholder = { Text("Buscar...", color = GrayText) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),

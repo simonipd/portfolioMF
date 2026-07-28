@@ -137,7 +137,7 @@ fun AssetDetailScreen(
                 Spacer(modifier = Modifier.height(40.dp))
                 
                 Text(
-                    text = "SUMMARY",
+                    text = "RESUMEN",
                     style = MaterialTheme.typography.labelLarge,
                     color = GrayText,
                     fontWeight = FontWeight.Bold
@@ -161,7 +161,7 @@ fun AssetDetailScreen(
                 ) {
                     Column(modifier = Modifier.padding(20.dp)) {
                         Text(
-                            text = "BUY",
+                            text = "COMPRAR",
                             style = MaterialTheme.typography.labelLarge,
                             color = GrayText,
                             fontWeight = FontWeight.Bold
@@ -172,7 +172,7 @@ fun AssetDetailScreen(
                         OutlinedTextField(
                             value = amount,
                             onValueChange = { amount = it },
-                            placeholder = { Text("Amount to invest (USD)", color = GrayText) },
+                            placeholder = { Text("Monto a invertir (USD)", color = GrayText) },
                             modifier = Modifier.fillMaxWidth(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             singleLine = true,
@@ -202,7 +202,7 @@ fun AssetDetailScreen(
                             if (viewModel.isPlacingOrder) {
                                 CircularProgressIndicator(modifier = Modifier.size(24.dp), color = DarkBackground)
                             } else {
-                                Text("PLACE BUY ORDER", fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
+                                Text("ORDENAR COMPRA", fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
                             }
                         }
                     }

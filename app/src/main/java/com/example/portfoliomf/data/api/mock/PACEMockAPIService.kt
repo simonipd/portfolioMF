@@ -300,7 +300,7 @@ class PACEMockAPIService private constructor() {
                 price = "150.00",
                 returnPercentage = "0.01",
                 returnAmount = "1.00",
-                description = "Apple Inc. is a technology company that designs, manufactures, and markets electronic products and software.",
+                description = "Apple Inc. es una empresa tecnológica que diseña, fabrica y comercializa productos electrónicos y software.",
                 open = "149.00",
                 volume = "12500000",
                 marketCap = "2800000000000",
@@ -326,7 +326,7 @@ class PACEMockAPIService private constructor() {
                 price = "320.00",
                 returnPercentage = "-0.02",
                 returnAmount = "-6.40",
-                description = "Microsoft Corporation is a multinational technology company that produces computer software and consumer electronics.",
+                description = "Microsoft Corporation es una empresa tecnológica multinacional que produce software informático y productos electrónicos de consumo.",
                 open = "325.00",
                 volume = "28000000",
                 marketCap = "2400000000000",
@@ -345,7 +345,7 @@ class PACEMockAPIService private constructor() {
                 price = "410.00",
                 returnPercentage = "0.05",
                 returnAmount = "20.00",
-                description = "NVIDIA Corporation is a semiconductor company and a leader in artificial intelligence.",
+                description = "NVIDIA Corporation es una empresa de semiconductores y líder en inteligencia artificial.",
                 open = "405.00",
                 volume = "45000000",
                 marketCap = "3200000000000",
@@ -371,7 +371,7 @@ class PACEMockAPIService private constructor() {
                 price = "410.00",
                 returnPercentage = "0.02",
                 returnAmount = "8.20",
-                description = "Vanguard S&P 500 ETF is an exchange-traded fund that tracks the S&P 500 Index.",
+                description = "El Vanguard S&P 500 ETF es un fondo cotizado en bolsa que replica el índice S&P 500.",
                 open = "408.00",
                 volume = "5000000",
                 marketCap = "800000000000",
@@ -408,7 +408,7 @@ class PACEMockAPIService private constructor() {
         }
     }
     
-    // MARK: - Order Endpoints
+    // MARK: - Order Endpoints - pending confirmation
     
     suspend fun simulateOrder(request: OrderSimulationRequest): OrderSimulationResponse {
         delay(400)

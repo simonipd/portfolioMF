@@ -5,7 +5,7 @@ object NetworkConfig {
     // Change this to 'true' to use the Postman mock server
     const val USE_REAL_NETWORK = false
     
-    // URL de tu Mock Server en Postman
-    const val BASE_URL = "https://your-postman-mock-url.com/"
+    // URL for Mock Server in Postman
+    const val BASE_URL = ""
     
 }

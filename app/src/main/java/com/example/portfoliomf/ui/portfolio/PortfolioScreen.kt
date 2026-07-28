@@ -37,9 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.portfoliomf.R
 import com.example.portfoliomf.data.models.PositionItem
 import com.example.portfoliomf.ui.theme.DarkBackground
 import com.example.portfoliomf.ui.theme.DarkGray
@@ -56,9 +59,15 @@ fun PortfolioScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Patrimonio", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.portfoliomf_portfolio_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
                 actions = {
-                    Text("USD / CLP", color = PrimaryGold, modifier = Modifier.padding(end = 16.dp), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = stringResource(R.string.portfoliomf_currency_pair),
+                        color = PrimaryGold,
+                        modifier = Modifier.padding(end = dimensionResource(R.dimen.portfoliomf_padding_medium)),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = DarkBackground)
             )
@@ -72,27 +81,27 @@ fun PortfolioScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = dimensionResource(R.dimen.portfoliomf_screen_horizontal_padding))
         ) {
             item {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
                 PortfolioValueHeader(
-                    value = viewModel.portfolioState?.portfolioValue ?: "40.433,00",
-                    change = "7.06 (0,04%) Hoy"
+                    value = viewModel.portfolioState?.portfolioValue ?: "40,433.00",
+                    change = stringResource(R.string.portfoliomf_today_change_format, "7.06", "0.04%", stringResource(R.string.portfoliomf_today))
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_extra_large)))
                 PerformanceChart()
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_large)))
                 TimeRangeSelector()
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_huge)))
                 BuyingPowerSection()
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_huge)))
                 PositionsHeader()
             }
 
             items(viewModel.positionsState) { position ->
                 PositionItemPremium(position)
-                Divider(color = DarkGray, thickness = 0.5.dp)
+                Divider(color = DarkGray, thickness = dimensionResource(R.dimen.portfoliomf_divider_thickness))
             }
         }
     }
@@ -101,18 +110,19 @@ fun PortfolioScreen(
 @Composable
 fun PortfolioValueHeader(value: String, change: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        Text("USD $$value", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        Text("USD $$value", fontSize = dimensionResource(R.dimen.portfoliomf_font_size_header).value.sp, fontWeight = FontWeight.Bold, color = Color.White)
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("▲", color = PositiveGreen, fontSize = 12.sp)
-            Spacer(Modifier.width(4.dp))
-            Text("$$change", color = PositiveGreen, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+            Text("▲", color = PositiveGreen, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_small).value.sp)
+            Spacer(Modifier.width(dimensionResource(R.dimen.portfoliomf_padding_small)))
+            Text(change, color = PositiveGreen, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_medium).value.sp, fontWeight = FontWeight.Medium)
         }
     }
 }
 
 @Composable
 fun PerformanceChart() {
-    Canvas(modifier = Modifier.fillMaxWidth().height(160.dp)) {
+    val chartHeight = dimensionResource(R.dimen.portfoliomf_chart_height)
+    Canvas(modifier = Modifier.fillMaxWidth().height(chartHeight)) {
         val path = Path().apply {
             moveTo(0f, size.height * 0.7f)
             lineTo(size.width * 0.2f, size.height * 0.5f)
@@ -134,9 +144,9 @@ fun TimeRangeSelector() {
             Text(
                 text = range,
                 color = if (isSelected) Color.White else GrayText,
-                fontSize = 12.sp,
+                fontSize = dimensionResource(R.dimen.portfoliomf_font_size_small).value.sp,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                modifier = if (isSelected) Modifier.background(DarkGray, RoundedCornerShape(4.dp)).padding(horizontal = 8.dp, vertical = 4.dp) else Modifier.padding(4.dp)
+                modifier = if (isSelected) Modifier.background(DarkGray, RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_small))).padding(horizontal = dimensionResource(R.dimen.portfoliomf_padding_small), vertical = dimensionResource(R.dimen.portfoliomf_padding_small) / 2) else Modifier.padding(dimensionResource(R.dimen.portfoliomf_padding_small) / 2)
             )
         }
     }
@@ -145,11 +155,11 @@ fun TimeRangeSelector() {
 @Composable
 fun BuyingPowerSection() {
     Column {
-        Text("Poder de compra", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Spacer(Modifier.height(16.dp))
+        Text(stringResource(R.string.portfoliomf_buying_power), color = Color.White, fontWeight = FontWeight.Bold, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_title).value.sp)
+        Spacer(Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
         Row(Modifier.fillMaxWidth()) {
-            BuyingPowerItem("US DOLLARS", "$40.455,21", Modifier.weight(1f))
-            BuyingPowerItem("PESO CHILENO", "$42.788,54", Modifier.weight(1f))
+            BuyingPowerItem(stringResource(R.string.portfoliomf_us_dollars), "$40,455.21", Modifier.weight(1f))
+            BuyingPowerItem(stringResource(R.string.portfoliomf_chilean_peso), "$42,788.54", Modifier.weight(1f))
         }
     }
 }
@@ -157,40 +167,40 @@ fun BuyingPowerSection() {
 @Composable
 fun BuyingPowerItem(label: String, value: String, modifier: Modifier) {
     Column(modifier) {
-        Text(label, color = GrayText, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-        Text(value, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        Text(label, color = GrayText, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_caption).value.sp, fontWeight = FontWeight.Bold)
+        Text(value, color = Color.White, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_large).value.sp, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
 fun PositionsHeader() {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Text("Posiciones", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text(stringResource(R.string.portfoliomf_positions), color = Color.White, fontWeight = FontWeight.Bold, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_title).value.sp)
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("VALOR DEL DÍA", color = GrayText, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-            Icon(Icons.Default.KeyboardArrowDown, null, tint = GrayText, modifier = Modifier.size(16.dp))
+            Text(stringResource(R.string.portfoliomf_day_value), color = GrayText, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_caption).value.sp, fontWeight = FontWeight.Bold)
+            Icon(Icons.Default.KeyboardArrowDown, null, tint = GrayText, modifier = Modifier.size(dimensionResource(R.dimen.portfoliomf_icon_size_small)))
         }
     }
-    Spacer(Modifier.height(8.dp))
+    Spacer(Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_small)))
 }
 
 @Composable
 fun PositionItemPremium(position: PositionItem) {
-    Row(Modifier.fillMaxWidth().padding(vertical = 16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+    Row(Modifier.fillMaxWidth().padding(vertical = dimensionResource(R.dimen.portfoliomf_padding_medium)), horizontalArrangement = Arrangement.SpaceBetween) {
         Column {
-            Text(position.ticker, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text(position.name, color = GrayText, fontSize = 12.sp)
+            Text(position.ticker, color = Color.White, fontWeight = FontWeight.Bold, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_large).value.sp)
+            Text(position.name, color = GrayText, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_small).value.sp)
         }
-        Text("$$${position.currentValue}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text("$$${position.currentValue}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_large).value.sp)
     }
 }
 
 @Composable
 fun PortfolioBottomBar(onSearchClick: () -> Unit) {
-    NavigationBar(containerColor = DarkBackground, tonalElevation = 0.dp) {
-        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.ShoppingCart, "Trade") }, label = { Text("Trade") })
-        NavigationBarItem(selected = true, onClick = {}, icon = { Icon(Icons.Default.Menu, "Wallet") }, label = { Text("Wallet") })
-        NavigationBarItem(selected = false, onClick = onSearchClick, icon = { Icon(Icons.Default.Search, "Search") }, label = { Text("Search") })
-        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.AccountCircle, "Account") }, label = { Text("Account") })
+    NavigationBar(containerColor = DarkBackground, tonalElevation = dimensionResource(R.dimen.portfoliomf_nav_bar_elevation)) {
+        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.ShoppingCart, stringResource(R.string.portfoliomf_nav_trade)) }, label = { Text(stringResource(R.string.portfoliomf_nav_trade)) })
+        NavigationBarItem(selected = true, onClick = {}, icon = { Icon(Icons.Default.Menu, stringResource(R.string.portfoliomf_nav_wallet)) }, label = { Text(stringResource(R.string.portfoliomf_nav_wallet)) })
+        NavigationBarItem(selected = false, onClick = onSearchClick, icon = { Icon(Icons.Default.Search, stringResource(R.string.portfoliomf_nav_search)) }, label = { Text(stringResource(R.string.portfoliomf_nav_search)) })
+        NavigationBarItem(selected = false, onClick = {}, icon = { Icon(Icons.Default.AccountCircle, stringResource(R.string.portfoliomf_nav_account)) }, label = { Text(stringResource(R.string.portfoliomf_nav_account)) })
     }
 }

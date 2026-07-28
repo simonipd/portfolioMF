@@ -1,3 +1,29 @@
 <resources>
-    <string name="app_name">Portfolio MF</string>
+    <string name="portfoliomf_app_name">Portfolio MF</string>
+    <string name="portfoliomf_portfolio_title">Portfolio</string>
+    <string name="portfoliomf_currency_pair">USD / CLP</string>
+    <string name="portfoliomf_today">Today</string>
+    <string name="portfoliomf_today_change_format">%1$s (%2$s) %3$s</string>
+    <string name="portfoliomf_buying_power">Buying Power</string>
+    <string name="portfoliomf_us_dollars">US DOLLARS</string>
+    <string name="portfoliomf_chilean_peso">CHILEAN PESO</string>
+    <string name="portfoliomf_positions">Positions</string>
+    <string name="portfoliomf_day_value">DAY VALUE</string>
+    <string name="portfoliomf_nav_trade">Trade</string>
+    <string name="portfoliomf_nav_wallet">Wallet</string>
+    <string name="portfoliomf_nav_search">Search</string>
+    <string name="portfoliomf_nav_account">Account</string>
+    <string name="portfoliomf_search_placeholder">Search...</string>
+    <string name="portfoliomf_back_content_description">Back</string>
+    <string name="portfoliomf_summary_label">SUMMARY</string>
+    <string name="portfoliomf_buy_label">BUY</string>
+    <string name="portfoliomf_amount_placeholder">Amount to invest (USD)</string>
+    <string name="portfoliomf_place_order_button">PLACE BUY ORDER</string>
+    <string name="portfoliomf_error_market_closed">Error: The market is currently closed.</string>
+    <string name="portfoliomf_error_loading_data">Error loading some data</string>
+    <string name="portfoliomf_error_connection">Connection error: %1$s</string>
+    <string name="portfoliomf_error_processing_order">Error processing order: %1$s</string>
+    <string name="portfoliomf_order_successful">Order Successful! ID: %1$s</string>
+    <string name="portfoliomf_retry">Retry</string>
+    <string name="portfoliomf_search_title">Search</string>
 </resources>

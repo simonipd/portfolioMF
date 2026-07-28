@@ -1,0 +1,18 @@
+<resources>
+    <dimen name="padding_small">8.dp</dimen>
+    <dimen name="padding_medium">16.dp</dimen>
+    <dimen name="padding_large">24.dp</dimen>
+    <dimen name="padding_extra_large">32.dp</dimen>
+    <dimen name="padding_huge">40.dp</dimen>
+    <dimen name="screen_horizontal_padding">20.dp</dimen>
+    <dimen name="header_spacing">16.dp</dimen>
+    <dimen name="chart_height">160.dp</dimen>
+    <dimen name="nav_bar_elevation">0.dp</dimen>
+    <dimen name="divider_thickness">0.5.dp</dimen>
+    <dimen name="icon_size_small">16.dp</dimen>
+    <dimen name="icon_size_medium">24.dp</dimen>
+    <dimen name="corner_radius_small">4.dp</dimen>
+    <dimen name="corner_radius_medium">12.dp</dimen>
+    <dimen name="corner_radius_large">16.dp</dimen>
+    <dimen name="button_height">56.dp</dimen>
+</resources>

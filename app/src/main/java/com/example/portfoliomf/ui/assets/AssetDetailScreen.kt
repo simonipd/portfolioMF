@@ -40,11 +40,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.portfoliomf.R
 import com.example.portfoliomf.ui.theme.DarkBackground
 import com.example.portfoliomf.ui.theme.DarkGray
 import com.example.portfoliomf.ui.theme.GrayText
@@ -73,7 +75,7 @@ fun AssetDetailScreen(
                 title = { Text(ticker, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.portfoliomf_back_content_description), tint = Color.White)
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -88,14 +90,14 @@ fun AssetDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = dimensionResource(R.dimen.portfoliomf_padding_large))
         ) {
             if (details == null) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(color = PrimaryGold)
                 }
             } else {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
                 
                 Text(
                     text = details.name,
@@ -124,26 +126,26 @@ fun AssetDetailScreen(
                         imageVector = if (isPositive) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
                         tint = color,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(dimensionResource(R.dimen.portfoliomf_icon_size_medium))
                     )
                     Text(
                         text = "${details.returnAmount} (${details.returnPercentage}%)",
                         color = color,
                         fontWeight = FontWeight.Medium,
-                        fontSize = 16.sp
+                        fontSize = dimensionResource(R.dimen.portfoliomf_font_size_large).value.sp
                     )
                 }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_huge)))
                 
                 Text(
-                    text = "RESUMEN",
+                    text = stringResource(R.string.portfoliomf_summary_label),
                     style = MaterialTheme.typography.labelLarge,
                     color = GrayText,
                     fontWeight = FontWeight.Bold
                 )
                 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_small)))
                 
                 Text(
                     text = details.description,
@@ -152,31 +154,31 @@ fun AssetDetailScreen(
                     lineHeight = 22.sp
                 )
                 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_extra_large)))
                 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = DarkGray),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_large))
                 ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
+                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.portfoliomf_screen_horizontal_padding))) {
                         Text(
-                            text = "COMPRAR",
+                            text = stringResource(R.string.portfoliomf_buy_label),
                             style = MaterialTheme.typography.labelLarge,
                             color = GrayText,
                             fontWeight = FontWeight.Bold
                         )
                         
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
 
                         OutlinedTextField(
                             value = amount,
                             onValueChange = { amount = it },
-                            placeholder = { Text("Monto a invertir (USD)", color = GrayText) },
+                            placeholder = { Text(stringResource(R.string.portfoliomf_amount_placeholder), color = GrayText) },
                             modifier = Modifier.fillMaxWidth(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             singleLine = true,
-                            shape = RoundedCornerShape(12.dp),
+                            shape = RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_medium)),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = PrimaryGold,
                                 unfocusedBorderColor = Color.DarkGray,
@@ -186,23 +188,23 @@ fun AssetDetailScreen(
                             )
                         )
                         
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_screen_horizontal_padding)))
                         
                         Button(
                             onClick = { viewModel.buyAsset(ticker, amount) },
-                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.portfoliomf_button_height)),
                             enabled = amount.isNotBlank() && !viewModel.isPlacingOrder,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = PrimaryGold,
                                 contentColor = DarkBackground,
                                 disabledContainerColor = PrimaryGold.copy(alpha = 0.3f)
                             ),
-                            shape = RoundedCornerShape(12.dp)
+                            shape = RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_medium))
                         ) {
                             if (viewModel.isPlacingOrder) {
-                                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = DarkBackground)
+                                CircularProgressIndicator(modifier = Modifier.size(dimensionResource(R.dimen.portfoliomf_icon_size_medium)), color = DarkBackground)
                             } else {
-                                Text("ORDENAR COMPRA", fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
+                                Text(stringResource(R.string.portfoliomf_place_order_button), fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
                             }
                         }
                     }
@@ -213,7 +215,7 @@ fun AssetDetailScreen(
                         text = viewModel.orderStatus!!,
                         color = PositiveGreen,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),
+                        modifier = Modifier.padding(top = dimensionResource(R.dimen.portfoliomf_header_spacing)).fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -223,7 +225,7 @@ fun AssetDetailScreen(
                         text = viewModel.orderError!!,
                         color = NegativeRed,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 16.dp).fillMaxWidth(),
+                        modifier = Modifier.padding(top = dimensionResource(R.dimen.portfoliomf_header_spacing)).fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
                 }

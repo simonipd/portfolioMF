@@ -1,0 +1,25 @@
+<resources>
+    <dimen name="portfoliomf_padding_small">8dp</dimen>
+    <dimen name="portfoliomf_padding_medium">16dp</dimen>
+    <dimen name="portfoliomf_padding_large">24dp</dimen>
+    <dimen name="portfoliomf_padding_extra_large">32dp</dimen>
+    <dimen name="portfoliomf_padding_huge">40dp</dimen>
+    <dimen name="portfoliomf_screen_horizontal_padding">20dp</dimen>
+    <dimen name="portfoliomf_header_spacing">16dp</dimen>
+    <dimen name="portfoliomf_chart_height">160dp</dimen>
+    <dimen name="portfoliomf_nav_bar_elevation">0dp</dimen>
+    <dimen name="portfoliomf_divider_thickness">0.5dp</dimen>
+    <dimen name="portfoliomf_icon_size_small">16dp</dimen>
+    <dimen name="portfoliomf_icon_size_medium">24dp</dimen>
+    <dimen name="portfoliomf_corner_radius_small">4dp</dimen>
+    <dimen name="portfoliomf_corner_radius_medium">12dp</dimen>
+    <dimen name="portfoliomf_corner_radius_large">16dp</dimen>
+    <dimen name="portfoliomf_button_height">56dp</dimen>
+
+    <dimen name="portfoliomf_font_size_caption">10sp</dimen>
+    <dimen name="portfoliomf_font_size_small">12sp</dimen>
+    <dimen name="portfoliomf_font_size_medium">14sp</dimen>
+    <dimen name="portfoliomf_font_size_large">16sp</dimen>
+    <dimen name="portfoliomf_font_size_title">18sp</dimen>
+    <dimen name="portfoliomf_font_size_header">32sp</dimen>
+</resources>

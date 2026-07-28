@@ -15,9 +15,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.portfoliomf.R
 import com.example.portfoliomf.data.models.AssetDto
 import com.example.portfoliomf.ui.theme.*
 
@@ -33,10 +35,10 @@ fun SearchScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Buscar", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.portfoliomf_search_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.portfoliomf_back_content_description))
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = DarkBackground)
@@ -48,7 +50,7 @@ fun SearchScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = dimensionResource(R.dimen.portfoliomf_padding_medium))
         ) {
             OutlinedTextField(
                 value = searchQuery,
@@ -56,10 +58,10 @@ fun SearchScreen(
                     searchQuery = it
                     viewModel.searchAssets(it)
                 },
-                placeholder = { Text("Buscar...", color = GrayText) },
+                placeholder = { Text(stringResource(R.string.portfoliomf_search_placeholder), color = GrayText) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = dimensionResource(R.dimen.portfoliomf_padding_small)),
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = GrayText) },
                 trailingIcon = {
                     if (searchQuery.isNotEmpty()) {
@@ -68,7 +70,7 @@ fun SearchScreen(
                         }
                     }
                 },
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_medium)),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = GrayText,
@@ -85,11 +87,11 @@ fun SearchScreen(
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.portfoliomf_padding_small))
             ) {
                 items(viewModel.searchResults) { asset ->
                     SearchAssetItem(asset, onClick = { onAssetClick(asset.ticker) })
-                    Divider(color = DarkGray, thickness = 0.5.dp)
+                    Divider(color = DarkGray, thickness = dimensionResource(R.dimen.portfoliomf_divider_thickness))
                 }
             }
         }
@@ -102,16 +104,16 @@ fun SearchAssetItem(asset: AssetDto, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(vertical = 12.dp),
+            .padding(vertical = dimensionResource(R.dimen.portfoliomf_padding_medium)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = asset.ticker, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(text = asset.ticker, fontWeight = FontWeight.Bold, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_large).value.sp)
             Text(
                 text = asset.name,
                 color = GrayText,
-                fontSize = 12.sp,
+                fontSize = dimensionResource(R.dimen.portfoliomf_font_size_small).value.sp,
                 maxLines = 1
             )
         }
@@ -125,15 +127,15 @@ fun SearchAssetItem(asset: AssetDto, onClick: () -> Unit) {
                 text = "${sign}${asset.dayVariation.replace("-", "")}%",
                 color = color,
                 fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(end = 12.dp)
+                fontSize = dimensionResource(R.dimen.portfoliomf_font_size_medium).value.sp,
+                modifier = Modifier.padding(end = dimensionResource(R.dimen.portfoliomf_padding_medium))
             )
             
             Icon(
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(dimensionResource(R.dimen.portfoliomf_icon_size_medium))
             )
         }
     }

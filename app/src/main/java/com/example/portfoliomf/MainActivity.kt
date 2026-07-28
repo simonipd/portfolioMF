@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Usamos RetrofitClient que tiene el switch para Mock o Red Real
+        // RetrofitClient is added, which has the switch for Mock or Real Network in the tests.
         val apiService = RetrofitClient.apiService
         val repository = PortfolioRepository(apiService)
         val portfolioViewModel = PortfolioViewModel(repository)

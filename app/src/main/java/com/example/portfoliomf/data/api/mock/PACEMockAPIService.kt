@@ -319,6 +319,25 @@ class PACEMockAPIService private constructor() {
                     pesoPorcentaje = "25.50"
                 )
             )
+            "MSFT" -> VitrinaDetailResponse(
+                simbolo = "MSFT",
+                nombre = "Microsoft Corporation",
+                categoria = "ACCIONES",
+                precio = "320.00",
+                retornoPorcentaje = "-0.02",
+                retornoMonto = "-6.40",
+                descripcion = "Microsoft Corporation es una empresa tecnológica multinacional que produce software de computadora y electrónica de consumo.",
+                apertura = "325.00",
+                volumen = "28000000",
+                marketCap = "2400000000000",
+                precioMasAlto = "328.00",
+                precioMasBajo = "318.00",
+                maximoAnual = "366.78",
+                sector = "Tecnología",
+                industria = "Software",
+                montoMinimoDeOrden = "10.00",
+                detalleCliente = null
+            )
             "NVDA" -> VitrinaDetailResponse(
                 simbolo = "NVDA",
                 nombre = "NVIDIA Corporation",
@@ -344,6 +363,25 @@ class PACEMockAPIService private constructor() {
                     gananciaOperdida = "705.00",
                     pesoPorcentaje = "12.75"
                 )
+            )
+            "VOO" -> VitrinaDetailResponse(
+                simbolo = "VOO",
+                nombre = "Vanguard S&P 500 ETF",
+                categoria = "ETF",
+                precio = "410.00",
+                retornoPorcentaje = "0.02",
+                retornoMonto = "8.20",
+                descripcion = "Vanguard S&P 500 ETF es un fondo que rastrea el índice S&P 500.",
+                apertura = "408.00",
+                volumen = "5000000",
+                marketCap = "800000000000",
+                precioMasAlto = "412.00",
+                precioMasBajo = "407.00",
+                maximoAnual = "440.00",
+                sector = "Diversificado",
+                industria = "ETFs",
+                montoMinimoDeOrden = "1.00",
+                detalleCliente = null
             )
             "ERROR" -> {
                 throw Exception("MERCADO_CERRADO")

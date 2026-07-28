@@ -1,23 +1,19 @@
 package com.example.portfoliomf.ui.portfolio
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.portfoliomf.data.models.BalanceResponse
-import com.example.portfoliomf.data.models.PortfolioSummary
-import com.example.portfoliomf.data.models.PositionItem
+import com.example.portfoliomf.data.api.NetworkResult
 import com.example.portfoliomf.data.repository.PortfolioRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PortfolioViewModel(private val repository: PortfolioRepository) : ViewModel() {
 
-    var portfolioState by mutableStateOf<PortfolioSummary?>(null)
-    var balanceState by mutableStateOf<BalanceResponse?>(null)
-    var positionsState by mutableStateOf<List<PositionItem>>(emptyList())
-    var isLoading by mutableStateOf(false)
-    var errorMessage by mutableStateOf<String?>(null)
+    private val _uiState = MutableStateFlow(PortfolioUIState())
+    val uiState: StateFlow<PortfolioUIState> = _uiState.asStateFlow()
 
     init {
         loadData()
@@ -25,24 +21,39 @@ class PortfolioViewModel(private val repository: PortfolioRepository) : ViewMode
 
     fun loadData() {
         viewModelScope.launch {
-            isLoading = true
-            errorMessage = null
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            
             try {
-                val portfolioDeferred = repository.getPortfolio()
-                val balanceDeferred = repository.getBalance()
-                val positionsDeferred = repository.getPositions()
+                // In a real app, we might use combine or zip if we want to wait for all
+                val portfolioResult = repository.getPortfolio()
+                val balanceResult = repository.getBalance()
+                val positionsResult = repository.getPositions()
 
-                if (portfolioDeferred.isSuccessful) portfolioState = portfolioDeferred.body()
-                if (balanceDeferred.isSuccessful) balanceState = balanceDeferred.body()
-                if (positionsDeferred.isSuccessful) positionsState = positionsDeferred.body()?.results ?: emptyList()
-
-                if (!portfolioDeferred.isSuccessful || !balanceDeferred.isSuccessful || !positionsDeferred.isSuccessful) {
-                    errorMessage = "Error loading some data"
+                _uiState.update { currentState ->
+                    var newState = currentState.copy(isLoading = false)
+                    
+                    when (portfolioResult) {
+                        is NetworkResult.Success -> newState = newState.copy(portfolio = portfolioResult.data)
+                        is NetworkResult.Error -> newState = newState.copy(errorMessage = portfolioResult.message)
+                        else -> {}
+                    }
+                    
+                    when (balanceResult) {
+                        is NetworkResult.Success -> newState = newState.copy(balance = balanceResult.data)
+                        is NetworkResult.Error -> newState = newState.copy(errorMessage = balanceResult.message)
+                        else -> {}
+                    }
+                    
+                    when (positionsResult) {
+                        is NetworkResult.Success -> newState = newState.copy(positions = positionsResult.data.results)
+                        is NetworkResult.Error -> newState = newState.copy(errorMessage = positionsResult.message)
+                        else -> {}
+                    }
+                    
+                    newState
                 }
             } catch (e: Exception) {
-                errorMessage = "Network error: ${e.message}"
-            } finally {
-                isLoading = false
+                _uiState.update { it.copy(isLoading = false, errorMessage = "Unexpected error: ${e.message}") }
             }
         }
     }

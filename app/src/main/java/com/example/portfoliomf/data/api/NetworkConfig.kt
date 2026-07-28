@@ -6,6 +6,7 @@ object NetworkConfig {
     const val USE_REAL_NETWORK = false
     
     // URL for Mock Server in Postman
-    const val BASE_URL = ""
+    // NOTE: Retrofit requires the base URL to end with a /
+    const val BASE_URL = "https://api.abaqus.cl/SOME-ROUTE/"
     
 }

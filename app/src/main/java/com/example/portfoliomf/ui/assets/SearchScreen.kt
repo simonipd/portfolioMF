@@ -30,6 +30,7 @@ fun SearchScreen(
     onAssetClick: (String) -> Unit,
     onBack: () -> Unit
 ) {
+    val searchUIState by viewModel.searchUIState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
     Scaffold(
@@ -81,7 +82,7 @@ fun SearchScreen(
                 )
             )
 
-            if (viewModel.isSearching) {
+            if (searchUIState.isSearching) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = PrimaryGold)
             }
 
@@ -89,7 +90,7 @@ fun SearchScreen(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.portfoliomf_padding_small))
             ) {
-                items(viewModel.searchResults) { asset ->
+                items(searchUIState.results) { asset ->
                     SearchAssetItem(asset, onClick = { onAssetClick(asset.ticker) })
                     Divider(color = DarkGray, thickness = dimensionResource(R.dimen.portfoliomf_divider_thickness))
                 }

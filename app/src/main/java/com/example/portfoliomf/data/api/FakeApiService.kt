@@ -31,7 +31,8 @@ class FakeApiService : ApiService {
             BalanceResponse(
                 availableToTradeUsd = "40.455,21",
                 availableToWithdrawUsd = "35.000,00",
-                balanceUsd = "40.455,21",
+                usdBalance = "40.455,21",
+                clpBalance = "$0",
                 updatedAt = "2023-10-27T10:00:00Z"
             )
         )

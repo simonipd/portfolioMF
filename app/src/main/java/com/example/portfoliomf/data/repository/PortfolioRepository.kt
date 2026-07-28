@@ -1,33 +1,28 @@
 package com.example.portfoliomf.data.repository
 
 import com.example.portfoliomf.data.api.ApiService
-import com.example.portfoliomf.data.models.BalanceResponse
-import com.example.portfoliomf.data.models.OrderRequest
-import com.example.portfoliomf.data.models.OrderResponse
-import com.example.portfoliomf.data.models.PaginatedPositionsResponse
-import com.example.portfoliomf.data.models.PaginatedAssetResponse
-import com.example.portfoliomf.data.models.PortfolioSummary
-import com.example.portfoliomf.data.models.AssetDetailDto
-import retrofit2.Response
+import com.example.portfoliomf.data.api.BaseRepository
+import com.example.portfoliomf.data.api.NetworkResult
+import com.example.portfoliomf.data.models.*
 
-class PortfolioRepository(private val apiService: ApiService) {
+class PortfolioRepository(private val apiService: ApiService) : BaseRepository() {
     private val customerId = "user-123" // Hardcoded for this project
 
-    suspend fun getPortfolio(periodo: String = "YTD"): Response<PortfolioSummary> =
-        apiService.getPortfolio(customerId, periodo)
+    suspend fun getPortfolio(periodo: String = "YTD"): NetworkResult<PortfolioSummary> =
+        safeApiCall { apiService.getPortfolio(customerId, periodo) }
     
-    suspend fun getBalance(): Response<BalanceResponse> =
-        apiService.getBalance(customerId)
+    suspend fun getBalance(): NetworkResult<BalanceResponse> =
+        safeApiCall { apiService.getBalance(customerId) }
     
-    suspend fun getPositions(): Response<PaginatedPositionsResponse> =
-        apiService.getPositions(customerId)
+    suspend fun getPositions(): NetworkResult<PaginatedPositionsResponse> =
+        safeApiCall { apiService.getPositions(customerId) }
     
-    suspend fun searchAssets(query: String): Response<PaginatedAssetResponse> =
-        apiService.searchAssets(query)
+    suspend fun searchAssets(query: String): NetworkResult<PaginatedAssetResponse> =
+        safeApiCall { apiService.searchAssets(query) }
     
-    suspend fun getAssetDetails(ticker: String): Response<AssetDetailDto> =
-        apiService.getAssetDetails(ticker)
+    suspend fun getAssetDetails(ticker: String): NetworkResult<AssetDetailDto> =
+        safeApiCall { apiService.getAssetDetails(ticker) }
     
-    suspend fun createOrder(idempotencyKey: String, orderRequest: OrderRequest): Response<OrderResponse> =
-        apiService.createOrder(idempotencyKey, orderRequest)
+    suspend fun createOrder(idempotencyKey: String, orderRequest: OrderRequest): NetworkResult<OrderResponse> =
+        safeApiCall { apiService.createOrder(idempotencyKey, orderRequest) }
 }

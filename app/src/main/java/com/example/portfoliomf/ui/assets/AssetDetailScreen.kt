@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -30,9 +31,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +50,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.portfoliomf.R
+import com.example.portfoliomf.data.models.AssetDetailDto
 import com.example.portfoliomf.ui.theme.DarkBackground
 import com.example.portfoliomf.ui.theme.DarkGray
 import com.example.portfoliomf.ui.theme.GrayText
@@ -62,7 +66,10 @@ fun AssetDetailScreen(
     onBack: () -> Unit
 ) {
     var amount by remember { mutableStateOf("") }
-    val details = viewModel.selectedAssetDetails
+    var showConfirmation by remember { mutableStateOf(false) }
+    
+    val detailState by viewModel.detailState.collectAsState()
+    val orderState by viewModel.orderState.collectAsState()
 
     LaunchedEffect(ticker) {
         viewModel.getAssetDetails(ticker)
@@ -92,144 +99,213 @@ fun AssetDetailScreen(
                 .padding(padding)
                 .padding(horizontal = dimensionResource(R.dimen.portfoliomf_padding_large))
         ) {
-            if (details == null) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = PrimaryGold)
+            when (val state = detailState) {
+                is AssetDetailState.Loading -> {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = PrimaryGold)
+                    }
                 }
-            } else {
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
-                
-                Text(
-                    text = details.name,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = GrayText,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-                
-                Text(
-                    text = "USD $${details.price}",
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
+                is AssetDetailState.Error -> {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(text = state.message, color = NegativeRed, textAlign = TextAlign.Center)
+                    }
+                }
+                is AssetDetailState.Success -> {
+                    AssetDetailContent(
+                        details = state.details,
+                        amount = amount,
+                        onAmountChange = { amount = it },
+                        orderState = orderState,
+                        onBuyClick = { showConfirmation = true }
+                    )
+                }
+            }
+        }
+    }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+    if (showConfirmation && detailState is AssetDetailState.Success) {
+        val details = (detailState as AssetDetailState.Success).details
+        AlertDialog(
+            onDismissRequest = { showConfirmation = false },
+            title = { Text("Confirmar Compra", color = Color.White) },
+            text = { 
+                Text(
+                    "¿Estás seguro que deseas invertir USD $amount en ${details.name} ($ticker)?",
+                    color = Color.White
+                ) 
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showConfirmation = false
+                        viewModel.buyAsset(ticker, amount)
+                    }
                 ) {
-                    val isPositive = !details.returnPercentage.startsWith("-")
-                    val color = if (isPositive) PositiveGreen else NegativeRed
-                    Icon(
-                        imageVector = if (isPositive) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                        contentDescription = null,
-                        tint = color,
-                        modifier = Modifier.size(dimensionResource(R.dimen.portfoliomf_icon_size_medium))
-                    )
-                    Text(
-                        text = "${details.returnAmount} (${details.returnPercentage}%)",
-                        color = color,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = dimensionResource(R.dimen.portfoliomf_font_size_large).value.sp
-                    )
+                    Text("COMPRAR", color = PrimaryGold, fontWeight = FontWeight.Bold)
                 }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmation = false }) {
+                    Text("CANCELAR", color = GrayText)
+                }
+            },
+            containerColor = DarkGray
+        )
+    }
+}
 
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_huge)))
-                
+@Composable
+fun AssetDetailContent(
+    details: AssetDetailDto,
+    amount: String,
+    onAmountChange: (String) -> Unit,
+    orderState: OrderState,
+    onBuyClick: () -> Unit
+) {
+    Column {
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
+        
+        Text(
+            text = details.name,
+            style = MaterialTheme.typography.headlineSmall,
+            color = GrayText,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        
+        Text(
+            text = "USD $${details.price}",
+            style = MaterialTheme.typography.displaySmall,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val isPositive = !details.returnPercentage.startsWith("-")
+            val color = if (isPositive) PositiveGreen else NegativeRed
+            Icon(
+                imageVector = if (isPositive) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(dimensionResource(R.dimen.portfoliomf_icon_size_medium))
+            )
+            Text(
+                text = "${details.returnAmount} (${details.returnPercentage}%)",
+                color = color,
+                fontWeight = FontWeight.Medium,
+                fontSize = dimensionResource(R.dimen.portfoliomf_font_size_large).value.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_huge)))
+        
+        Text(
+            text = stringResource(R.string.portfoliomf_summary_label),
+            style = MaterialTheme.typography.labelLarge,
+            color = GrayText,
+            fontWeight = FontWeight.Bold
+        )
+        
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_small)))
+        
+        Text(
+            text = details.description,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.White,
+            lineHeight = 22.sp
+        )
+        
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_extra_large)))
+        
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = DarkGray),
+            shape = RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_large))
+        ) {
+            Column(modifier = Modifier.padding(dimensionResource(R.dimen.portfoliomf_screen_horizontal_padding))) {
                 Text(
-                    text = stringResource(R.string.portfoliomf_summary_label),
+                    text = stringResource(R.string.portfoliomf_buy_label),
                     style = MaterialTheme.typography.labelLarge,
                     color = GrayText,
                     fontWeight = FontWeight.Bold
                 )
                 
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_small)))
-                
-                Text(
-                    text = details.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
-                    lineHeight = 22.sp
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
+
+                OutlinedTextField(
+                    value = amount,
+                    onValueChange = onAmountChange,
+                    placeholder = { Text(stringResource(R.string.portfoliomf_amount_placeholder), color = GrayText) },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                    shape = RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_medium)),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = PrimaryGold,
+                        unfocusedBorderColor = Color.DarkGray,
+                        cursorColor = PrimaryGold,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    )
                 )
                 
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_extra_large)))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_screen_horizontal_padding)))
                 
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = DarkGray),
-                    shape = RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_large))
+                Button(
+                    onClick = onBuyClick,
+                    modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.portfoliomf_button_height)),
+                    enabled = amount.isNotBlank() && orderState !is OrderState.Processing,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PrimaryGold,
+                        contentColor = DarkBackground,
+                        disabledContainerColor = PrimaryGold.copy(alpha = 0.3f)
+                    ),
+                    shape = RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_medium))
                 ) {
-                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.portfoliomf_screen_horizontal_padding))) {
-                        Text(
-                            text = stringResource(R.string.portfoliomf_buy_label),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = GrayText,
-                            fontWeight = FontWeight.Bold
-                        )
-                        
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
-
-                        OutlinedTextField(
-                            value = amount,
-                            onValueChange = { amount = it },
-                            placeholder = { Text(stringResource(R.string.portfoliomf_amount_placeholder), color = GrayText) },
-                            modifier = Modifier.fillMaxWidth(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            singleLine = true,
-                            shape = RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_medium)),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = PrimaryGold,
-                                unfocusedBorderColor = Color.DarkGray,
-                                cursorColor = PrimaryGold,
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White
-                            )
-                        )
-                        
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_screen_horizontal_padding)))
-                        
-                        Button(
-                            onClick = { viewModel.buyAsset(ticker, amount) },
-                            modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.portfoliomf_button_height)),
-                            enabled = amount.isNotBlank() && !viewModel.isPlacingOrder,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = PrimaryGold,
-                                contentColor = DarkBackground,
-                                disabledContainerColor = PrimaryGold.copy(alpha = 0.3f)
-                            ),
-                            shape = RoundedCornerShape(dimensionResource(R.dimen.portfoliomf_corner_radius_medium))
-                        ) {
-                            if (viewModel.isPlacingOrder) {
-                                CircularProgressIndicator(modifier = Modifier.size(dimensionResource(R.dimen.portfoliomf_icon_size_medium)), color = DarkBackground)
-                            } else {
-                                Text(stringResource(R.string.portfoliomf_place_order_button), fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
-                            }
-                        }
+                    if (orderState is OrderState.Processing) {
+                        CircularProgressIndicator(modifier = Modifier.size(dimensionResource(R.dimen.portfoliomf_icon_size_medium)), color = DarkBackground)
+                    } else {
+                        Text(stringResource(R.string.portfoliomf_place_order_button), fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp)
                     }
-                }
-
-                if (viewModel.orderStatus != null) {
-                    Text(
-                        text = viewModel.orderStatus!!,
-                        color = PositiveGreen,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = dimensionResource(R.dimen.portfoliomf_header_spacing)).fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-                
-                if (viewModel.orderError != null) {
-                    Text(
-                        text = viewModel.orderError!!,
-                        color = NegativeRed,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = dimensionResource(R.dimen.portfoliomf_header_spacing)).fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
                 }
             }
         }
+
+        OrderStateFeedback(orderState)
+    }
+}
+
+@Composable
+fun OrderStateFeedback(orderState: OrderState) {
+    when (orderState) {
+        is OrderState.Success -> {
+            Text(
+                text = stringResource(R.string.portfoliomf_order_successful, orderState.orderId),
+                color = PositiveGreen,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.portfoliomf_header_spacing)).fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        }
+        is OrderState.Error -> {
+            val message = when (orderState.message) {
+                "MARKET_CLOSED" -> stringResource(R.string.portfoliomf_error_market_closed)
+                "CONNECTION_ERROR" -> stringResource(R.string.portfoliomf_error_connection, "")
+                else -> stringResource(R.string.portfoliomf_error_processing_order, orderState.message)
+            }
+            Text(
+                text = message,
+                color = NegativeRed,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.portfoliomf_header_spacing)).fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        }
+        else -> {}
     }
 }

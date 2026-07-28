@@ -3,6 +3,7 @@ package com.example.portfoliomf.ui.portfolio
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,6 +34,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +44,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.portfoliomf.R
@@ -47,6 +52,7 @@ import com.example.portfoliomf.data.models.PositionItem
 import com.example.portfoliomf.ui.theme.DarkBackground
 import com.example.portfoliomf.ui.theme.DarkGray
 import com.example.portfoliomf.ui.theme.GrayText
+import com.example.portfoliomf.ui.theme.NegativeRed
 import com.example.portfoliomf.ui.theme.PositiveGreen
 import com.example.portfoliomf.ui.theme.PrimaryGold
 
@@ -56,6 +62,8 @@ fun PortfolioScreen(
     viewModel: PortfolioViewModel,
     onSearchClick: () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -77,31 +85,49 @@ fun PortfolioScreen(
         },
         containerColor = DarkBackground
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = dimensionResource(R.dimen.portfoliomf_screen_horizontal_padding))
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
-                PortfolioValueHeader(
-                    value = viewModel.portfolioState?.portfolioValue ?: "40,433.00",
-                    change = stringResource(R.string.portfoliomf_today_change_format, "7.06", "0.04%", stringResource(R.string.portfoliomf_today))
+        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+            if (uiState.isLoading && uiState.portfolio == null) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = PrimaryGold
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_extra_large)))
-                PerformanceChart()
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_large)))
-                TimeRangeSelector()
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_huge)))
-                BuyingPowerSection()
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_huge)))
-                PositionsHeader()
-            }
+            } else if (uiState.errorMessage != null && uiState.portfolio == null) {
+                Text(
+                    text = uiState.errorMessage ?: "Error",
+                    color = NegativeRed,
+                    modifier = Modifier.align(Alignment.Center).padding(16.dp),
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = dimensionResource(R.dimen.portfoliomf_screen_horizontal_padding))
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
+                        PortfolioValueHeader(
+                            value = uiState.portfolio?.portfolioValue ?: "0.00",
+                            change = stringResource(R.string.portfoliomf_today_change_format, "0.00", "0.00%", stringResource(R.string.portfoliomf_today))
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_extra_large)))
+                        PerformanceChart()
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_large)))
+                        TimeRangeSelector()
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_huge)))
+                        BuyingPowerSection(
+                            usdBalance = uiState.balance?.usdBalance ?: "$0.00",
+                            clpBalance = uiState.balance?.clpBalance ?: "$0.00"
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.portfoliomf_padding_huge)))
+                        PositionsHeader()
+                    }
 
-            items(viewModel.positionsState) { position ->
-                PositionItemPremium(position)
-                Divider(color = DarkGray, thickness = dimensionResource(R.dimen.portfoliomf_divider_thickness))
+                    items(uiState.positions) { position ->
+                        PositionItemPremium(position)
+                        Divider(color = DarkGray, thickness = dimensionResource(R.dimen.portfoliomf_divider_thickness))
+                    }
+                }
             }
         }
     }
@@ -153,13 +179,13 @@ fun TimeRangeSelector() {
 }
 
 @Composable
-fun BuyingPowerSection() {
+fun BuyingPowerSection(usdBalance: String, clpBalance: String) {
     Column {
         Text(stringResource(R.string.portfoliomf_buying_power), color = Color.White, fontWeight = FontWeight.Bold, fontSize = dimensionResource(R.dimen.portfoliomf_font_size_title).value.sp)
         Spacer(Modifier.height(dimensionResource(R.dimen.portfoliomf_header_spacing)))
         Row(Modifier.fillMaxWidth()) {
-            BuyingPowerItem(stringResource(R.string.portfoliomf_us_dollars), "$40,455.21", Modifier.weight(1f))
-            BuyingPowerItem(stringResource(R.string.portfoliomf_chilean_peso), "$42,788.54", Modifier.weight(1f))
+            BuyingPowerItem(stringResource(R.string.portfoliomf_us_dollars), usdBalance, Modifier.weight(1f))
+            BuyingPowerItem(stringResource(R.string.portfoliomf_chilean_peso), clpBalance, Modifier.weight(1f))
         }
     }
 }

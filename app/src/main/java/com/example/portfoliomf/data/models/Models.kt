@@ -19,7 +19,8 @@ data class PerformancePoint(
 data class BalanceResponse(
     val availableToTradeUsd: String,
     val availableToWithdrawUsd: String,
-    val balanceUsd: String,
+    val usdBalance: String,
+    val clpBalance: String,
     val updatedAt: String
 )
 

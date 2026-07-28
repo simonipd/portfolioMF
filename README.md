@@ -1,26 +1,22 @@
-# portfolioMF
-Portafolio Fondos mutuos, y activos
+# PortfolioMF 📈 — Finanzas personales, fondos mutuos y acciones.
 
-Implement proyect with this structure:
+¡Hola! 👋 Bienvenido a **PortfolioMF**. 
 
-1. Red:
-   ◦ RetrofitClient configured with OkHttpClient.
+## 🏗️ ¿Como se estructura este proyecto?
 
-◦ MockInterceptor correctly routing requests to the Mock service.
+Las tecnologías que se aplicarón en esta proyecto son:
 
-◦ NetworkConfig allows switching to Postman with a single boolean.
+*   **Jetpack Compose & Material 3**
+*   **Arquitectura que respira (MVVM + Flow)**: Los datos fluyen de forma reactiva. Si algo cambia, la pantalla se entera al segundo.
+*   **Independencia Total**: Se implemento un sistema de **Mocks**, para probar toda la app en cualquier lugar, sin depender de una API externa. Sin embargo también
+se realizó la imlementación para ocupar apis
 
-2. Models (DTOs):
-   ◦ All monetary fields and percentages are Strings (avoids floating-point precision issues).
+## 🚀 ¿Como empezar?
 
-◦ Paginated response structures implemented for Positions and Showcase.
+1.  **Clona y Abre**: Importa el proyecto en tu Android Studio favorito.
+2.  **Sincroniza**: Deja que Gradle prepare el terreno.
+3.  **Explora**: Si deseas usar datos reales o de servidor (mock server de postman), solo cambia el switch `USE_REAL_NETWORK = true` en `NetworkConfig.kt`.
 
-3. User Interface (compose):
-   ◦ Portfolio: Displays value, performance, and asset list.
+---
 
-Search: Real-time search using AssetViewModel.
-
-Detail and Purchase: Handles loading statuses, success, and errors (including the closed market scenario).
-
-4. Mocks:
-   ◦ PACEMockAPIService integrated with the sample data you provided.
+Hecho con ❤️ por SPD.
